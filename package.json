@@ -1,0 +1,25 @@
+{
+  "name": "kbase-ui-plugin-dashboard",
+  "version": "1.0.0",
+  "description": "This is a sample readme for a plugin. Please use this space to splain it.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eapearson/kbase-ui-plugin-dashboard.git"
+  },
+  "author": "kbase developers",
+  "license": "SEE LICENSE IN LICENSE",
+  "bugs": {
+    "url": "https://github.com/eapearson/kbase-ui-plugin-dashboard/issues"
+  },
+  "homepage": "https://github.com/eapearson/kbase-ui-plugin-dashboard#readme",
+  "devDependencies": {
+    "eslint": "^4.19.1"
+  }
+}

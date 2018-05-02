@@ -1,0 +1,26 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "eslint",
+            "problemMatcher": [
+                "$eslint-stylish"
+            ]
+        },
+        {
+            "label": "Run eslint",
+            "type": "shell",
+            "command": "./node_modules/.bin/eslint \"**/*.js\"",
+            "windows": {
+                "command": ".\\node_modules\\.bin\\eslint *.js"
+            },
+            "presentation": {
+                "reveal": "never",
+                "panel": "new"
+            },
+            "problemMatcher": ["$eslint-stylish"]
+        }
+    ]
+}

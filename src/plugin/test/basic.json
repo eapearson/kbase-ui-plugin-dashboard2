@@ -1,0 +1,95 @@
+[
+    {
+        "description": "Ensure main view appears",
+        "specs": [
+            {
+                "description": "should have main panel framing appear when hit the path",
+                "baseSelector": [
+                    {
+                        "type": "plugin",
+                        "value": "dashboard"
+                    }
+                ],
+                "tasks": [
+                    {
+                        "title": "login",
+                        "subtask": "dashboard"
+                    },
+                    {
+                        "title": "navigate to dashboard (should be there already)",
+                        "navigate": {
+                            "path": "dashboard"
+                        }
+                    },
+                    {
+                        "selector": [                            
+                        ],
+                        "wait": 10000
+                    },
+                    {
+                        "selector": [
+                            {
+                                "type": "component",
+                                "value": "your-narratives"
+                            },
+                            {
+                                "type": "slider",
+                                "value": "narratives"
+                            }
+                        ],
+                        "wait": 10000
+                    },
+                    {
+                        "selector": [
+                            {
+                                "type": "component",
+                                "value": "tutorial-narratives"
+                            },
+                            {
+                                "type": "slider",
+                                "value": "narratives"
+                            }
+                        ],
+                        "wait": 10000
+                    },
+                    {
+                        "selector": [
+                            {
+                                "type": "component",
+                                "value": "shared-narratives"
+                            },
+                            {
+                                "type": "slider",
+                                "value": "narratives"
+                            }
+                        ],
+                        "wait": 10000
+                    },
+                    {
+                        "selector": [
+                            {
+                                "type": "component",
+                                "value": "public-narratives"
+                            },
+                            {
+                                "type": "slider",
+                                "value": "narratives"
+                            }
+                        ],
+                        "wait": 10000
+                    },
+                    {
+                        "selector": [
+                            {
+                                "type": "component",
+                                "value": "metrics"
+                            }
+                        ],
+                        "wait": 10000
+                    }
+                   
+                ]
+            }
+        ]
+    }
+]
