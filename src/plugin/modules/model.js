@@ -133,13 +133,13 @@ define([
             });
         }
 
-        getNarratives2({appTag: appTag}) {
+        getNarratives2() {
             let timer = new Timer();
             timer.start('get workspaces');
 
             // TODO undo this
             let profiles;
-            return this.rpc.call('NarrativeService', 'list_all_narratives', {})
+            return this.rpc.call('DashboardService', 'list_all_narratives', {})
                 .spread((result, stats) => {
                     console.log('stats', stats);
                     // let s = stats.reduce((s, row) => {
@@ -198,6 +198,7 @@ define([
                     // return {
                     //     username: profile.user.username,
                     //     realname: profile.user.realname,
+                    //     gravatarHash: props.getProp(profile, 'profile.synced.gravatarHash'),
                     //     gravatarDefault: props.getProp(profile, 'profile.userdata.gravatarDefault', null),
                     //     avatarUrl: this.makeAvatar(profile)
                     // };
@@ -459,7 +460,7 @@ define([
         // }
 
         deleteNarrative(workspaceId) {
-            return this.rpc.call('NarrativeService', 'delete_narrative', {
+            return this.rpc.call('DashboardService', 'delete_narrative', {
                 wsi:{
                     id: workspaceId
                 }
@@ -467,7 +468,7 @@ define([
         }
 
         shareNarrative(workspaceId, username, permission) {
-            return this.rpc.call('NarrativeService', 'share_narrative', {
+            return this.rpc.call('DashboardService', 'share_narrative', {
                 wsi: {
                     id: workspaceId
                 },
@@ -477,7 +478,7 @@ define([
         }
 
         unshareNarrative(workspaceId, username) {
-            return this.rpc.call('NarrativeService', 'unshare_narrative', {
+            return this.rpc.call('DashboardService', 'unshare_narrative', {
                 wsi: {
                     id: workspaceId
                 },
@@ -486,7 +487,7 @@ define([
         }
 
         shareNarrativeGlobal(workspaceId) {
-            return this.rpc.call('NarrativeService', 'share_narrative_global', {
+            return this.rpc.call('DashboardService', 'share_narrative_global', {
                 wsi: {
                     id: workspaceId
                 }
@@ -494,7 +495,7 @@ define([
         }
 
         unshareNarrativeGlobal(workspaceId) {
-            return this.rpc.call('NarrativeService', 'unshare_narrative_global', {
+            return this.rpc.call('DashboardService', 'unshare_narrative_global', {
                 wsi: {
                     id: workspaceId
                 }

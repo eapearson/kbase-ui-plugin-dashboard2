@@ -2,7 +2,7 @@
 ---
 package:
     author: Erik Pearson
-    name: dashboard
+    name: dashboard2
     description: The dashboard panel and associated widgets
     date: August 6, 2015
     version: 0.0.1
@@ -17,19 +17,19 @@ install:
     widgets:    
         -
             module: panel
-            id: dashboard_panel
+            id: dashboard2_panel
             type: factory
             css: true
     routes:
         -
-            path: ['dashboard']
-            widget: dashboard_panel
+            path: ['dashboard2']
+            widget: dashboard2_panel
             authorization: true
     menu:
         -
-            name: dashboard
+            name: dashboard2
             menus: ['authenticated']
             definition:
-                path: ['dashboard']
+                path: ['dashboard2']
                 label: Dashboard
                 icon: dashboard

@@ -167,9 +167,9 @@ define([
                 iconUrl: null
             };
 
-            if (app.type === 'app') {
-                console.log('app view model...', app);
-            }
+            // if (app.type === 'app') {
+            // console.log('app view model...', app);
+            // }
 
             if (app.obsolete) {
                 // old methods not supported at all.
@@ -275,11 +275,12 @@ define([
         }
 
         makeAvatar(profile) {
-            switch (props.getProp(profile, 'avatarOption', null) || 'gravatar') {
+            switch (props.getProp(profile, 'profile.userdata.avatarOption', null) || 'gravatar') {
             case 'gravatar':
-                if (props.hasProp(profile, 'gravatarHash')) {
-                    var gravatarDefault = props.getProp(profile, 'gravatarDefault', null) || 'identicon';
-                    var gravatarHash = profile.gravatarHash;
+            // console.log('gravatar??', props.hasProp(profile, 'profile.synced.gravatarHash'), )
+                if (props.hasProp(profile, 'profile.synced.gravatarHash')) {
+                    var gravatarDefault = props.getProp(profile, 'profile.userdata.gravatarDefault', null) || 'identicon';
+                    var gravatarHash = props.getProp(profile, 'profile.synced.gravatarHash', null);
                     if (gravatarHash) {
                         return 'https://www.gravatar.com/avatar/' + gravatarHash + '?s=32&amp;r=pg&d=' + gravatarDefault;
                     } else {
@@ -300,24 +301,37 @@ define([
                 return {
                     username: username,
                     realname: username,
+                    gravatarHash: null,
                     gravatarDefault: null,
                     avatarUrl: null
                 };
             } else {
                 return {
-                    username: profile.username,
-                    realname: profile.realname,
-                    gravatarDefault: props.getProp(profile, 'gravatarDefault', null),
+                    username: profile.user.username,
+                    realname: profile.user.realname,
+                    gravatarHash: props.getProp(profile, 'profile.synced.gravatarHash', null),
+                    gravatarDefault: props.getProp(profile, 'profile.userdata.gravatarDefault', null),
                     avatarUrl: this.makeAvatar(profile)
                 };
             }
         }
+
+        // profileToVM(profile) {
+        //     return {
+        //         username: profile.user.username,
+        //         realname: profile.user.realname,
+        //         gravatarHash: props.getProp(profile, 'profile.synced.gravatarHash'),
+        //         gravatarDefault: props.getProp(profile, 'profile.userdata.gravatarDefault', null),
+        //         avatarUrl: this.makeAvatar(profile)
+        //     };
+        // }
 
         shareNarrative(narrative, username, permission) {
             return this.model.shareNarrative(narrative.ref.workspaceId, username, permission)
                 .then(() => {
                     return this.model.getUserProfile(username)
                         .then((profile) => {
+                            console.log('profile?', this.makeProfileVM(username, profile));
                             narrative.permissions.push({
                                 username: username,
                                 profile: this.makeProfileVM(username, profile),
@@ -361,11 +375,13 @@ define([
                 type: 'info',
                 viewModel: {
                     narrative: data,
-                    shareNarrative: (narrative, username, permission) => {return this.shareNarrative.call(this, narrative, username, permission);},
-                    unshareNarrative: (narrative, username) => {return this.unshareNarrative.call(this, narrative, username);},
-                    changeShareNarrative: this.changeShareNarrative,
-                    shareNarrativeGlobal: this.shareNarrativeGlobal,
-                    unshareNarrativeGlobal: this.unshareNarrativeGlobal
+                    // Note that we need to wrap the action methods in an arrow function in order to
+                    // retain the "this" context
+                    shareNarrative: (...args) => {return this.shareNarrative.apply(this, args);},
+                    unshareNarrative: (...args) => {return this.unshareNarrative.apply(this, args);},
+                    changeShareNarrative: (...args) => {return this.changeShareNarrative.apply(this, args);},
+                    shareNarrativeGlobal: (...args) => {return this.shareNarrativeGlobal.apply(this, args);},
+                    unshareNarrativeGlobal: (...args) => {return this.unshareNarrativeGlobal.apply(this, args);}
                 }
             });
         }

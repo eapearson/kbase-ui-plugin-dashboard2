@@ -28,7 +28,7 @@ define([
 
     function template() {
         return  div({
-            class: 'kbase-viewx kbase-dashboard-view xcontainer-fluid',
+            class: 'kbase-viewx dashboard-plugin xcontainer-fluid',
             style: {
                 display: 'flex',
                 flexDirection: 'column',

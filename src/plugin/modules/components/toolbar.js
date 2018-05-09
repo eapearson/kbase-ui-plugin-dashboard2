@@ -209,9 +209,6 @@ define([
                 }, div({
                     class: 'navbar-form navbar-group'
                 }, [
-
-                    gen.koIf('isDevMode',
-                        buildAppTagSelector()),
                     buildSearchBar()
                 ]))
             ])

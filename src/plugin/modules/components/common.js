@@ -45,18 +45,6 @@ define([
             div({
                 class: 'navbar-form navbar-group'
             }, [
-                gen.if('devMode', div({
-                    class: 'form-group'
-                }, [
-                    label('App tag: '),
-                    select({
-                        dataBind: {
-                            value: 'appTag',
-                            options: 'appTagValues',
-                        },
-                        class: 'form-control'
-                    })
-                ])),
                 div({
                     class: 'form-group'
                 }, [

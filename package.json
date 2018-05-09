@@ -1,5 +1,5 @@
 {
-  "name": "kbase-ui-plugin-dashboard",
+  "name": "kbase-ui-plugin-dashboard2",
   "version": "1.0.0",
   "description": "This is a sample readme for a plugin. Please use this space to splain it.",
   "main": "index.js",
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/eapearson/kbase-ui-plugin-dashboard.git"
+    "url": "git+https://github.com/eapearson/kbase-ui-plugin-dashboard2.git"
   },
   "author": "kbase developers",
   "license": "SEE LICENSE IN LICENSE",

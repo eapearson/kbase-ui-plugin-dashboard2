@@ -28,22 +28,6 @@ define([
             // IMPLEMENTED
             // this.getNarratives();
         }
-
-        // IMPLEMENTED
-        // getNarratives() {
-        //     this.loading(true);
-        //     let options = {
-        //         tag: this.appTag()
-        //     };
-        //     return this.data.getPublicNarratives(options)
-        //         .then((narratives) => {
-        //             this.loading(false);
-        //             this.narratives(narratives);
-        //         })
-        //         .finally(() => {
-        //             this.loading(false);
-        //         });
-        // }
     }
 
     function component() {

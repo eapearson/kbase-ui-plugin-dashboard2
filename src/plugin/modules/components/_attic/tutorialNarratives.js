@@ -24,26 +24,7 @@ define([
 
             // IMPLEMENTED
             this.title = 'Tutorial Narratives';
-
-            // IMPLEMENTED
-            // this.getNarratives();
         }
-
-        // IMPLEMENTED
-        // getNarratives() {
-        //     this.loading(true);
-        //     let options = {
-        //         tag: this.appTag()
-        //     };
-        //     return this.data.getTutorialNarratives(options)
-        //         .then((narratives) => {
-        //             this.loading(false);
-        //             this.narratives(narratives);
-        //         })
-        //         .finally(() => {
-        //             this.loading(false);
-        //         });
-        // }
     }
 
     function component() {

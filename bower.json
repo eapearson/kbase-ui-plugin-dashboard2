@@ -1,5 +1,5 @@
 {
-    "name": "kbase-ui-plugin-dashboard",
+    "name": "kbase-ui-plugin-dashboard2",
     "description": "A primary view (panel) for the KBase UI to provide a user with a summary of their Narratives, relationships, and status",
     "keywords": [
         "kbase", "widget"
@@ -14,7 +14,7 @@
     ],
     "repository": {
         "type": "git",
-        "url": "git://github.com/kbase/kbase-ui-plugin-dashboard"
+        "url": "git://github.com/kbase/kbase-ui-plugin-dashboard2"
     },
     "dependencies": {
         "bluebird": "^3.0.0",
