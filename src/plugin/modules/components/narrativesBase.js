@@ -33,7 +33,6 @@ define([
             this.username = runtime.service('session').getUsername();
 
             this.devMode = false;
-            this.appTag = params.appTag;
 
             this.data = Data.make({
                 runtime: runtime
@@ -84,11 +83,6 @@ define([
                 return filtered;
             });
 
-            // SUBSCRIPTIONS
-
-            this.subscribe(this.appTag, () => {
-                this.reloadNarratives();
-            });
 
             // PROVIDE...
 

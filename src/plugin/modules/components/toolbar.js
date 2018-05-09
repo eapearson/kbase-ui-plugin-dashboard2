@@ -17,20 +17,14 @@ define([
         div = t('div'),
         a = t('a'),
         span = t('span'),
-        label = t('label'),
         input = t('input'),
-        select = t('select'),
         button = t('button');
-
 
     class ViewModel extends ViewModelBase {
         constructor(params) {
             super(params);
 
             this.isDevMode = params.isDevMode;
-
-            this.appTag = params.appTag;
-            this.appTagValues = params.appTagValues;
 
             this.narrativeFilterInput = params.narrativeFilterInput;
         }
@@ -96,28 +90,6 @@ define([
                 buildReloadNarrativesButton()
             ])
         ];
-    }
-
-    function buildAppTagSelector() {
-        return  div({
-            class: 'form-group',
-            style: {
-                marginRight: '10px'
-            }
-        }, [
-            label({
-                style: {
-                    marginRight: '4px'
-                }
-            }, 'App Tag: '),
-            select({
-                dataBind: {
-                    value: 'appTag',
-                    options: 'appTagValues',
-                },
-                class: 'form-control'
-            })
-        ]);
     }
 
     function buildSearchBar() {

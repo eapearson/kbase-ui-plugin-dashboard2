@@ -27,7 +27,6 @@ define([
             this.username = runtime.service('session').getUsername();
 
             // import params
-            this.appTag = params.appTag;
             this.overlayComponent = params.overlayComponent;
             this.loading = params.narrativesLoading;
             this.narrativeFilter = params.narrativeFilter;
@@ -109,12 +108,6 @@ define([
             // });
 
 
-
-            // SUBSCRIPTIONS
-
-            this.subscribe(this.appTag, () => {
-                this.reloadNarratives();
-            });
 
             // DOM SUBS
 

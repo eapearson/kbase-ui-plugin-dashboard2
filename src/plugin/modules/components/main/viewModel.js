@@ -37,40 +37,14 @@ define([
             });
 
             this.isDevMode = ko.observable();
-            this.appTag = ko.observable();
-            this.appTagValues = [
-                'dev', 'beta', 'release'
-            ];
-
 
             // set the dev mode flag if the DevToken role is assigned
-            let deployEnvironment = runtime.config('deploy.environment');
+            // let deployEnvironment = runtime.config('deploy.environment');
             if (roles.indexOf('DevToken') >= 0) {
                 this.isDevMode(true);
             } else {
                 this.isDevMode(false);
             }
-
-            // Set the available app tags based on the current deployment environment.
-            // The default tag also depends on the dev mode flag.
-            switch (deployEnvironment) {
-            case 'ci':
-                this.appTagValues = [
-                    'dev', 'beta', 'release'
-                ];
-                // assume anyone using CI should mostly see dev apps.
-                this.initialAppTag = 'dev';
-                break;
-            case 'appdev':
-            case 'next':
-            case 'prod':
-            default:
-                this.appTagValues = [
-                    'beta', 'release'
-                ];
-                this.initialAppTag = 'release';
-            }
-            this.appTag(this.initialAppTag);
 
             this.narrativeFilterInput = ko.observable().extend({
                 rateLimit: 300
@@ -109,7 +83,7 @@ define([
 
             let timer = new Timer();
             timer.start('main:start');
-            this.model.getNarratives2({appTag: this.appTag()})
+            this.model.getNarratives2()
                 .then((narratives) => {
                     // now create a view model version of the narratives.
                     timer.start('main:convert to view model');

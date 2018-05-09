@@ -57,8 +57,6 @@ define([
                         name: ToolbarComponent.quotedName(),
                         params: {
                             isDevMode: 'isDevMode',
-                            appTag: 'appTag',
-                            appTagValues: 'appTagValues',
                             narrativeFilterInput: 'narrativeFilterInput',
                             reloadNarratives: 'reloadNarratives',
                             bus: 'bus'
@@ -78,7 +76,6 @@ define([
                             component: {
                                 name: YourNarrativesComponent.quotedName(),
                                 params: {
-                                    appTag: 'appTag',
                                     narrativeFilter: 'narrativeFilter',
                                     overlayComponent: 'overlayComponent',
                                     narrativesLoading: 'narrativesLoading',
@@ -98,7 +95,6 @@ define([
                             component: {
                                 name: TutorialNarrativesComponent.quotedName(),
                                 params: {
-                                    appTag: 'appTag',
                                     narrativeFilter: 'narrativeFilter',
                                     overlayComponent: 'overlayComponent',
                                     narrativesLoading: 'narrativesLoading',
@@ -118,7 +114,6 @@ define([
                             component: {
                                 name: SharedNarrativesComponent.quotedName(),
                                 params: {
-                                    appTag: 'appTag',
                                     narrativeFilter: 'narrativeFilter',
                                     overlayComponent: 'overlayComponent',
                                     narrativesLoading: 'narrativesLoading',
@@ -138,7 +133,6 @@ define([
                             component: {
                                 name: PublicNarrativesComponent.quotedName(),
                                 params: {
-                                    appTag: 'appTag',
                                     narrativeFilter: 'narrativeFilter',
                                     overlayComponent: 'overlayComponent',
                                     narrativesLoading: 'narrativesLoading',

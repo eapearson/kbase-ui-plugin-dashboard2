@@ -28,9 +28,6 @@ define([
 
             this.runtime = context['$root'].runtime;
 
-            // console.log('params', params);
-            // this.appTag = params.appTag;
-
             this.data = Data.make({
                 runtime: this.runtime
             });
