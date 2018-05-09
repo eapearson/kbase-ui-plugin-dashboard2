@@ -28,8 +28,7 @@ install:
     menu:
         -
             name: dashboard2
-            menus: ['authenticated']
-            definition:
-                path: ['dashboard2']
-                label: Dashboard
-                icon: dashboard
+            path: [dashboard2]
+            label: Dashboard 2
+            icon: dashboard
+            beta: true
