@@ -80,7 +80,33 @@ define([
             });
 
             // STARTUP
+            this.loadNarratives();
 
+            
+
+            this.actions = {
+                deleteNarrative: (narrative) => {
+                    return this.deleteNarrative(narrative);
+                },
+                shareNarrative: (narrative, username, permission) => {
+                    return this.shareNarrative(narrative, username, permission);
+                },
+                unshareNarrative: (narrative, username) => {
+                    return this.unshareNarrative(narrative, username);
+                },
+                changeShareNarrative: (narrative, username, permission) => {
+                    return this.changeShareNarrative(narrative, username, permission);
+                },
+                shareNarrativeGlobal: (narrative) => {
+                    return this.shareNarrativeGlobal(narrative);
+                },
+                unshareNarrativeGlobal: (narrative) => {
+                    return this.unshareNarrativeGlobal(narrative);
+                }
+            };
+        }
+
+        loadNarratives() {
             let timer = new Timer();
             timer.start('main:start');
             this.model.getNarratives2()
@@ -105,27 +131,6 @@ define([
                 .finally(() => {
                     timer.stop();
                 });
-
-            this.actions = {
-                deleteNarrative: (narrative) => {
-                    return this.deleteNarrative(narrative);
-                },
-                shareNarrative: (narrative, username, permission) => {
-                    return this.shareNarrative(narrative, username, permission);
-                },
-                unshareNarrative: (narrative, username) => {
-                    return this.unshareNarrative(narrative, username);
-                },
-                changeShareNarrative: (narrative, username, permission) => {
-                    return this.changeShareNarrative(narrative, username, permission);
-                },
-                shareNarrativeGlobal: (narrative) => {
-                    return this.shareNarrativeGlobal(narrative);
-                },
-                unshareNarrativeGlobal: (narrative) => {
-                    return this.unshareNarrativeGlobal(narrative);
-                }
-            };
         }
 
         appViewModel(app) {
@@ -180,7 +185,7 @@ define([
                 narrativeId: 'ws.' + narrative.workspaceId + '.obj.' + narrative.objectId,
                 // Last saved
                 // Need both? Probably not.
-                // modifiedAt: narrative.workspace.modDate,
+                modifiedAt: narrative.modifiedAt,
                 savedAt: narrative.savedAt,
                 savedBy: narrative.savedBy,
                 // workspace permission of the current user
@@ -238,11 +243,11 @@ define([
         }
 
         reloadNarratives() {
-            this.loadNarratives(true);
+            this.loadNarratives();
         }
 
         deleteNarrative(narrative) {
-            return this.model.deleteNarrative(narrative.ref.workspaceId)
+            return this.model.deleteNarrative(narrative.ref.workspaceId, narrative.ref.objectId)
                 .then(() => {
                     this.narratives.remove(narrative);
                 });
@@ -301,11 +306,11 @@ define([
         // }
 
         shareNarrative(narrative, username, permission) {
+            // console.log('sharing with', narrative.ref.workspaceId, narrative.modifiedAt.getTime(), username, permission)
             return this.model.shareNarrative(narrative.ref.workspaceId, username, permission)
                 .then(() => {
                     return this.model.getUserProfile(username)
                         .then((profile) => {
-                            console.log('profile?', this.makeProfileVM(username, profile));
                             narrative.permissions.push({
                                 username: username,
                                 profile: this.makeProfileVM(username, profile),
@@ -320,7 +325,7 @@ define([
         }
 
         unshareNarrative(narrative, username) {
-            return this.model.unshareNarrative(narrative.ref.workspaceId, username)
+            return this.model.unshareNarrative(narrative.ref.workspaceId,username)
                 .then(() => {
                     // TODO: remove from the view model
                     narrative.permissions.remove((permission) => {

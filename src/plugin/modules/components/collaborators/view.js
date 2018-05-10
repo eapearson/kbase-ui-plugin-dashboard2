@@ -120,7 +120,9 @@ define([
     }
 
     function template() {
-        return buildPanel();
+        return div([
+            buildPanel()
+        ]);
     }
 
     return template;

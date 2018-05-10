@@ -28,6 +28,8 @@ define([
 
             this.runtime = context['$root'].runtime;
 
+            this.loading = params.narrativesLoading;
+
             this.data = Data.make({
                 runtime: this.runtime
             });
@@ -48,7 +50,7 @@ define([
 
             let totalSharedNarratives = ko.pureComputed(() => {
                 return this.ownNarratives().filter((narrative) => {
-                    return (narrative.permissions.length > 0);
+                    return (narrative.permissions().length > 0);
                 }).length;
             });
 
@@ -68,8 +70,6 @@ define([
                 return this.data.calcNarrativesHistogram(data, totalSharedNarratives());
             });
 
-            // this.getData();
-
             this.runtime.service('data').getJson({
                 path: 'metrics',
                 file: 'narrative_histogram'
@@ -84,25 +84,6 @@ define([
                 sharedNarrativeData(data);
             });
         }
-
-        // getData() {
-        //     return Promise.all([
-        //         this.runtime.service('data').getJson({
-        //             path: 'metrics',
-        //             file: 'narrative_histogram'
-        //         }),
-        //         this.runtime.service('data').getJson({
-        //             path: 'metrics',
-        //             file: 'narrative_sharing_histogram'
-        //         })
-        //     ])
-        //         .spread((narrativeData, sharedNarrativeData, narratives) => {
-        //             let userValue = this.data.calcUserSummary(narratives);
-
-        //             this.narrativesHistogram(this.data.calcNarrativesHistogram(narrativeData, narratives.length));
-        //             this.sharedNarrativesHistogram(this.data.calcSharedNarrativesHistogram(sharedNarrativeData, userValue));
-        //         });
-        // }
     }
 
     function buildButtonBar() {
@@ -366,13 +347,11 @@ define([
                 }),
                 div([
                     h3('Total Narratives'),
-                    gen.koIf('narrativesHistogram()',
-                        buildNarrativesHistogram(),
-                        html.loading()),
+                    gen.if('loading', html.loading(),
+                        buildNarrativesHistogram()),
                     h3('Shared Narratives'),
-                    gen.koIf('sharedNarrativesHistogram()',
-                        buildSharedNarrativesHistogram(),
-                        html.loading())
+                    gen.if('loading',html.loading(),
+                        buildSharedNarrativesHistogram())
                 ])
             ])
         ]);

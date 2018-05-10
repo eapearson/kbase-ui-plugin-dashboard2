@@ -164,6 +164,8 @@ define([
                             component: {
                                 name: CollaboratorsComponent.quotedName(),
                                 params: {
+                                    narratives: 'narratives',
+                                    narrativesLoading: 'narrativesLoading'
                                 }
                             }
                         }
@@ -178,7 +180,8 @@ define([
                             component: {
                                 name: MetricsComponent.quotedName(),
                                 params: {
-                                    narratives: 'narratives'
+                                    narratives: 'narratives',
+                                    narrativesLoading: 'narrativesLoading'
                                 }
                             }
                         }

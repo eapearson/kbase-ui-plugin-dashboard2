@@ -15,13 +15,16 @@ define([
         constructor(params, context) {
             super(params);
 
+            this.narratives = params.narratives;
+
             this.runtime = context['$root'].runtime;
+            this.username = this.runtime.service('session').getUsername();
 
             this.data = Data.make({
                 runtime: this.runtime
             });
 
-            this.loading = ko.observableArray();
+            this.loading = params.narrativesLoading;
 
             this.error = ko.observable();
 
@@ -99,37 +102,48 @@ define([
                 return map;
             }, {});
 
-            this._collaborators = ko.observableArray();
-
             let direction = ko.pureComputed(() => {
                 return (this.table.sort.direction() === 'desc' ? -1 : 1);
             });
 
-
             this.collaborators = ko.pureComputed(() => {
-                return this._collaborators.sorted((a, b) => {
+                let n = this.narratives();
+                if (n.length === 0) {
+                    return [];
+                }
+                let collabs = this.narratives()
+                    .filter((narrative) => {
+                        return ((narrative.owner !== this.username &&
+                                 !narrative.isPublic() &&
+                                 narrative.permissions().some((permission) => {
+                                     return permission.username === this.username;
+                                 })) ||
+                                (narrative.owner === this.username));
+                    })
+                    .reduce((collabs, narrative) => {
+                        narrative.permissions().forEach((permission) => {
+                            if (!collabs[permission.username]) {
+                                collabs[permission.username] = {
+                                    username: permission.username,
+                                    count: 0,
+                                    realname: permission.profile.realname,
+                                    profile: permission.profile
+                                };
+                            }
+                            collabs[permission.username].count += 1;
+                        });
+                        return collabs;
+                    }, {});
+                let collabs2 = Object.keys(collabs).map((username) => {
+                    return collabs[username];
+                });
+                collabs2.sort((a, b) => {
                     let c = this.table.sort.column();
                     let x = direction() * this.table.columnMap[c].sort.comparator(a[c], b[c]);
                     return x;
                 });
+                return collabs2;
             });
-
-            this.getCollaborators();
-        }
-
-        getCollaborators() {
-            this.loading(true);
-            this.data.getCollaborators()
-                .then((result) => {
-                    this._collaborators(result);
-                })
-                .catch((err) => {
-                    console.error(err);
-                    this.error(err);
-                })
-                .finally(() => {
-                    this.loading(false);
-                });
         }
     }
 
