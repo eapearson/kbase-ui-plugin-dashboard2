@@ -250,7 +250,7 @@ define([
             buttons: [
                 {
                     type: 'default',
-                    label: 'Cancel',
+                    label: 'Close',
                     onClick: 'doClose'
                 },
                 {

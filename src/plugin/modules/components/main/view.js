@@ -28,12 +28,12 @@ define([
 
     function template() {
         return  div({
-            class: 'kbase-viewx dashboard-plugin xcontainer-fluid',
+            class: 'dashboard-plugin',
             style: {
                 display: 'flex',
                 flexDirection: 'column',
                 flex: '1 1 0px',
-                margin: '10px 10px 0 10px'
+                margin: '0px 10px 0 10px'
             },
             dataKBTesthookPlugin: 'dashboard'
         }, [

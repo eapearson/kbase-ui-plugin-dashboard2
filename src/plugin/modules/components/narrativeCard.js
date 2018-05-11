@@ -256,17 +256,17 @@ define([
                                 text: 'name'
                             },
                             target: '_blank'
-                        }),
-                        gen.if('count > 1 && id.gitCommitHash',
-                            span([
-                                ' (' +
-                                span({
-                                    dataBind: {
-                                        text: 'id.gitCommitHash.substring(0,7)'
-                                    }
-                                }),
-                                ')'
-                            ]))
+                        })
+                        // gen.if('count > 1 && id.gitCommitHash',
+                        //     span([
+                        //         ' (' +
+                        //         span({
+                        //             dataBind: {
+                        //                 text: 'id.gitCommitHash.substring(0,7)'
+                        //             }
+                        //         }),
+                        //         ')'
+                        //     ]))
                     ])
                 ],
                 [
