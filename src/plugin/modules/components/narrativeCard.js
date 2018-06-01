@@ -674,7 +674,8 @@ define([
                     }, a({
                         dataBind: {
                             attr: {
-                                href: '"/narrative/" + narrativeId'
+                                href: '"/narrative/" + narrativeId',
+                                title: 'title'
                             },
                             text: 'title'
                         },
