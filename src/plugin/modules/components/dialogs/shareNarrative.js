@@ -289,6 +289,15 @@ define([
                                 checked: 'isPublic'
                             }
                         }),
+                        span({
+                            class: 'fa fa-globe fa-lg',
+                            dataBind: {
+                                style: {
+                                    color: 'isPublic() ? "inherit" : "silver"'
+                                }
+                            }
+                        }),
+                        ' &ndash; ',
                         gen.if('isPublic', 'Shared', 'Share'),
                         ' as ',
                         span({
@@ -350,15 +359,17 @@ define([
                             td(buildPermissionControl()),
                             td(
                                 button({
-                                    class: 'fa fa-plus',
-                                    style: {
-                                        color: 'green'
-                                    },
+                                    class: 'btn btn-default',
                                     dataBind: {
                                         enable: '$component.canShare',
                                         click: 'function(d,e) {$component.doShare.call($component, d, e);}'
                                     }
-                                })
+                                }, span({
+                                    class: 'fa fa-plus',
+                                    style: {
+                                        color: 'green'
+                                    },
+                                }))
                             )
                         ]),
                         gen.foreach('usersSharedWith', tr([
@@ -404,14 +415,13 @@ define([
                             ])),
                             td(
                                 button({
-                                    class: 'fa fa-minus',
-                                    style: {
-                                        color: 'red'
-                                    },
+                                    class: 'btn btn-danger',
                                     dataBind: {
                                         click: 'function(d,e) {$component.doUnshare.call($component,d,e);}'
                                     }
-                                })
+                                }, span({
+                                    class: 'fa fa-trash'
+                                }))
                             )
                         ]))
                     ])

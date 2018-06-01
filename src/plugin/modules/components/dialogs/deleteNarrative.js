@@ -46,7 +46,7 @@ define([
             // when ingested...
             this.narrativeTitle = this.narrative.title;
             this.lastSavedAt = this.narrative.savedAt;
-            this.shareCount = this.narrative.permissions().length;
+            this.shareCount = ko.observable(this.narrative.permissions().length);
             this.isPublic = this.narrative.isPublic;
             // console.log('narrative perms', narrative.permissions);
             this.usersSharedWith = this.narrative.permissions.map((permission) => {
@@ -63,12 +63,13 @@ define([
             this.onClose = params.onClose;
 
             this.state = {
+                NEW: Symbol(),
                 INPROGRESS: Symbol(),
                 SUCCESS: Symbol(),
                 ERROR: Symbol()
             };
 
-            this.status = ko.observable();
+            this.status = ko.observable(this.state.NEW);
 
             this.error = ko.observable();
 
@@ -93,8 +94,8 @@ define([
         }
     }
 
-    function buildBody() {
-        return div({}, [
+    function buildMessaging() {
+        return [
             p([
                 'Proceed to delete narrative ',
                 span({
@@ -118,7 +119,7 @@ define([
                         }
                     }
                 }),
-                gen.koIf('shareCount > 0',
+                gen.koIf('shareCount() > 0',
                     span([
                         ' and shared with ',
                         span({
@@ -137,13 +138,13 @@ define([
                     ])),
                 '?'
             ]),
-            gen.koIf('shareCount > 0',
+            gen.koIf('shareCount() > 0',
                 div({
                     class: 'alert alert-warning'
                 }, [
                     p([
                         'Warning: This narrative is shared with ',
-                        gen.koIf('shareCount === 1',
+                        gen.koIf('shareCount() === 1',
                             'another user.',
                             span([
                                 span({
@@ -202,41 +203,62 @@ define([
                         'dashboard panel'
                     ])
                 ])),
+        ];
+    }
+
+    function buildInProgress() {
+        return div({
+            class: 'alert alert-info'
+        }, [
+            p([
+                html.loading('Deleting')
+            ])
+        ]);
+    }
+
+    function buildSuccess() {
+        return div({
+            class: 'alert alert-success'
+        }, [
+            p([
+                'Successfully deleted this narrative.'
+            ])
+        ]);
+    }
+
+    function buildError() {
+        return div({
+            class: 'alert alert-danger'
+        }, [
+            p([
+                'Error attempting to delete this Narrative!'
+            ]),
+            p({
+                dataBind: {
+                    text: 'error'
+                }
+            })
+        ]);
+    }
+
+    function buildBody() {
+        return div({}, [
             gen.koSwitch('status', [
                 [
+                    '$component.state.NEW',
+                    buildMessaging()
+                ],
+                [
                     '$component.state.INPROGRESS',
-                    div({
-                        class: 'alert alert-info'
-                    }, [
-                        p([
-                            html.loading('Deleting')
-                        ])
-                    ])
+                    buildInProgress()
                 ],
                 [
                     '$component.state.SUCCESS',
-                    div({
-                        class: 'alert alert-success'
-                    }, [
-                        p([
-                            'Successfully deleted this narrative.'
-                        ])
-                    ])
+                    buildSuccess()
                 ],
                 [
                     '$component.state.ERROR',
-                    div({
-                        class: 'alert alert-danger'
-                    }, [
-                        p([
-                            'Error attempting to delete this Narrative!'
-                        ]),
-                        p({
-                            dataBind: {
-                                text: 'error'
-                            }
-                        })
-                    ])
+                    buildError()
                 ]])
         ]);
     }
