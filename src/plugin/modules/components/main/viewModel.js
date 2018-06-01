@@ -1,17 +1,13 @@
 define([
-    'bluebird',
     'knockout',
     'kb_knockout/lib/viewModelBase',
     'kb_lib/props',
-    '../../lib/timer',
     '../dialogs/shareNarrative',
     '../dialogs/deleteNarrative'
 ], function (
-    Promise,
     ko,
     ViewModelBase,
     props,
-    Timer,
     ShareNarrativeComponent,
     DeleteNarrativeComponent
 ) {
@@ -107,12 +103,9 @@ define([
         }
 
         loadNarratives() {
-            let timer = new Timer();
-            timer.start('main:start');
             this.model.getNarratives2()
                 .then((narratives) => {
                     // now create a view model version of the narratives.
-                    timer.start('main:convert to view model');
 
                     let n = narratives.map((narrative) => {
                         // some top level properties.
@@ -123,13 +116,9 @@ define([
                         });
                     this.narrativesLoading(false);
                     this.narratives(n);
-                    timer.start('main:update apps');
                 })
                 .catch((err) => {
                     console.error('ERROR', err);
-                })
-                .finally(() => {
-                    timer.stop();
                 });
         }
 

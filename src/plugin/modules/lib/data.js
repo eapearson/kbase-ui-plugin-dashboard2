@@ -1,17 +1,13 @@
 define([
     'bluebird',
-    'knockout',
     'kb_service/utils',
     'kb_common/utils',
-    './rpc',
-    './timer'
+    './rpc'
 ], function (
     Promise,
-    ko,
     APIUtils,
     Utils,
-    Rpc,
-    Timer
+    Rpc
 ) {
     'use strict';
 
@@ -619,8 +615,6 @@ define([
         }
 
         function getNarratives2() {
-            let timer = new Timer();
-            timer.start('get workspaces');
             return rpc.call('Workspace', 'list_workspace_info', {
                 excludeGlobal: 0,
                 showDeleted: 0,
@@ -629,7 +623,6 @@ define([
                 }
             })
                 .spread((narrativeWorkspaces) => {
-                    timer.start('process workspaces');
                     // Use preallocated arrays for efficiency, that's all.
                     let narratives = new Array(narrativeWorkspaces.length);
                     let objectIds = new Array(narrativeWorkspaces.length);
@@ -656,7 +649,6 @@ define([
                     narratives = narratives.slice(0, narratives.length - skipped);
                     objectIds = objectIds.slice(0, objectIds.length - skipped);
 
-                    timer.start('get object info');
                     // Now get the info for all objects.
                     return rpc.call('Workspace', 'get_object_info3', {
                         objects: objectIds,
@@ -664,7 +656,6 @@ define([
                         ignoreErrors: 1
                     })
                         .spread((result) => {
-                            timer.start('process object info');
                             result.infos.forEach((info, index) => {
                                 if (info !== null) {
                                     narratives[index].object = APIUtils.objectInfoToObject(info);
@@ -677,7 +668,6 @@ define([
                         });
                 })
                 .then((narratives) => {
-                    timer.start('process metadata');
                     narratives.forEach((narrative) => {
                         // Now make sense of narrative metadata.
                         let cellTypes = {
@@ -779,7 +769,6 @@ define([
                     return narratives;
                 })
                 .then((narratives) => {
-                    timer.start('get permissions');
                     let permParams = narratives
                         .map((narrative) => {
                             return {
@@ -813,7 +802,6 @@ define([
                         });
                 })
                 .then((narratives) => {
-                    timer.start('get profiles for users with permissions');
                     // now, yuck, we need to get the user profile for all users with permissions.
                     // If this were super fast and slick we could just do this later...
                     let users = narratives.reduce((users, narrative) => {
@@ -852,11 +840,6 @@ define([
                             });
                             return narratives;
                         });
-                })
-                .then((narratives) => {
-                    timer.stop();
-                    timer.log();
-                    return narratives;
                 });
         }
 

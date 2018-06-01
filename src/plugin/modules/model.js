@@ -1,16 +1,12 @@
 define([
     'bluebird',
-    'kb_service/utils',
     'kb_lib/props',
     './lib/rpc',
-    './lib/timer',
     './lib/dashboardError'
 ], function (
     Promise,
-    apiUtils,
     props,
     RPC,
-    Timer,
     DashboardError
 ) {
     'use strict';
@@ -134,16 +130,12 @@ define([
         }
 
         getNarratives2() {
-            let timer = new Timer();
-            timer.start('get workspaces');
-
             // TODO undo this
             let profiles;
             return this.rpc.call('DashboardService', 'list_all_narratives', {})
                 .spread((result, stats) => {
                     console.log('stats', stats);
 
-                    timer.start('process metadata');
                     profiles = result.profiles;
 
                     let narratives = result.narratives.map((narrative) => {
@@ -154,7 +146,6 @@ define([
                     return narratives;
                 })
                 .then((narratives) => {
-                    timer.start('get profiles for users with permissions');
                     narratives.forEach((narrative) => {
                         narrative.permissions.forEach((permission) => {
                             permission.profile = profiles[permission.username] || null;
@@ -163,7 +154,6 @@ define([
                     return narratives;
                 })
                 .then((narratives) => {
-                    timer.stop();
                     return narratives;
                 });
         }
