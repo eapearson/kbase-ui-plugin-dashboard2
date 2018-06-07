@@ -67,7 +67,7 @@ define([
             style: {
                 width: '100%'
             },
-            dataKBTesthookWidget: 'your-narratives'
+            dataKBTesthookWidget: 'collaborators'
         }, [
             div({
                 class: 'panel-heading'
