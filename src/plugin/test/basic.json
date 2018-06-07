@@ -18,7 +18,7 @@
                     {
                         "title": "navigate to dashboard (should be there already)",
                         "navigate": {
-                            "path": "dashboard"
+                            "path": "dashboard2"
                         }
                     },
                     {
@@ -86,6 +86,10 @@
                             }
                         ],
                         "wait": 10000
+                    },
+                    {
+                        "title": "logout",
+                        "subtask": "logout"
                     }
                    
                 ]
