@@ -14,8 +14,8 @@ define([
     class Model {
         constructor(config) {
             this.runtime = config.runtime;
-            this.rpc = new RPC({
-                runtime: this.runtime
+            this.dashboardService = this.runtime.service('rpc').makeClient({
+                module: 'DashboardService'
             });
 
             this.appCache = {
@@ -132,11 +132,14 @@ define([
         getNarratives2() {
             // TODO undo this
             let profiles;
-            return this.rpc.call('DashboardService', 'list_all_narratives', {})
-                .spread((result, stats) => {
+            return this.dashboardService.callFunc('list_all_narratives', [{}])
+                .spread((result, error, stats) => {
                     console.log('stats', stats);
 
-                    profiles = result.profiles;
+                    profiles = result.profiles.reduce((profiles, profile) => {
+                        profiles[profile.user.username] = profile;
+                        return profiles;
+                    }, {});
 
                     let narratives = result.narratives.map((narrative) => {
                         narrative.savedAt = new Date(narrative.savedTime);
@@ -174,47 +177,47 @@ define([
 
 
         deleteNarrative(workspaceId, objectId) {
-            return this.rpc.call('DashboardService', 'delete_narrative', {
+            return this.dashboardService.callFunc('delete_narrative', [{
                 obji:{
                     workspace_id: workspaceId,
                     object_id: objectId
                 }
-            });
+            }]);
         }
 
         shareNarrative(workspaceId, username, permission) {
-            return this.rpc.call('DashboardService', 'share_narrative', {
+            return this.dashboardService.callFunc('share_narrative', [{
                 wsi: {
                     id: workspaceId
                 },
                 permission: permission,
                 users: [username]
-            });
+            }]);
         }
 
         unshareNarrative(workspaceId, username) {
-            return this.rpc.call('DashboardService', 'unshare_narrative', {
+            return this.dashboardService.callFunc('unshare_narrative', [{
                 wsi: {
                     id: workspaceId
                 },
                 users: [username]
-            });
+            }]);
         }
 
         shareNarrativeGlobal(workspaceId) {
-            return this.rpc.call('DashboardService', 'share_narrative_global', {
+            return this.dashboardService.callFunc('share_narrative_global', [{
                 wsi: {
                     id: workspaceId
                 }
-            });
+            }]);
         }
 
         unshareNarrativeGlobal(workspaceId) {
-            return this.rpc.call('DashboardService', 'unshare_narrative_global', {
+            return this.dashboardService.callFunc('unshare_narrative_global', [{
                 wsi: {
                     id: workspaceId
                 }
-            });
+            }]);
         }
 
     }
