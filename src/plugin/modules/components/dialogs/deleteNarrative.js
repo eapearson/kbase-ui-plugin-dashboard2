@@ -119,7 +119,7 @@ define([
                         }
                     }
                 }),
-                gen.koIf('shareCount() > 0',
+                gen.if('shareCount() > 0',
                     span([
                         ' and shared with ',
                         span({
@@ -134,17 +134,17 @@ define([
                                 }
                             }
                         }),
-                        gen.koPlural('shareCount', ' user', ' users')
+                        gen.plural('shareCount', ' user', ' users')
                     ])),
                 '?'
             ]),
-            gen.koIf('shareCount() > 0',
+            gen.if('shareCount() > 0',
                 div({
                     class: 'alert alert-warning'
                 }, [
                     p([
                         'Warning: This narrative is shared with ',
-                        gen.koIf('shareCount() === 1',
+                        gen.if('shareCount() === 1',
                             'another user.',
                             span([
                                 span({
@@ -164,7 +164,7 @@ define([
                     ]),
                     p([
                         'The following ',
-                        gen.koPlural('shareCount', 'user', 'users'),
+                        gen.plural('shareCount', 'user', 'users'),
                         ' will lose access to this narrative.'
                     ]),
                     ul({
@@ -192,7 +192,7 @@ define([
                         ')'
                     ]))
                 ])),
-            gen.koIf('isPublic',
+            gen.if('isPublic',
                 div({
                     class: 'alert alert-warning'
                 }, [
@@ -243,7 +243,7 @@ define([
 
     function buildBody() {
         return div({}, [
-            gen.koSwitch('status', [
+            gen.switch('status', [
                 [
                     '$component.state.NEW',
                     buildMessaging()

@@ -54,6 +54,7 @@ define([
             this.username = context['$root'].runtime.service('session').getUsername();
 
             // import from parent
+            console.log('params', params, UserPermission, params.narrative.permissions());
             this.narrative = params.narrative;
             this.shareNarrative = params.shareNarrative;
             this.unshareNarrative = params.unshareNarrative;
@@ -109,6 +110,7 @@ define([
                                     console.error('Error changing user share permissions', err);
                                 });
                         });
+                        console.log('PERM', permission);
                         return {
                             user: {
                                 username: permission.profile.username,
@@ -427,7 +429,7 @@ define([
                     ])
                 ])
             ]),
-            gen.koSwitch('state', [
+            gen.switch('state', [
                 [
                     '$component.states.INPROGRESS',
                     div({

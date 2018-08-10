@@ -224,25 +224,20 @@ define([
                                         ]),
                                         span([
                                             'Showing ',
-                                            gen.if('filteredNarratives().length < narratives().length',
+                                            span({
+                                                dataBind: {
+                                                    text: 'narrativesFilteredCount()'
+                                                }
+                                            }),
+                                            gen.if('narrativesFilteredCount() < narratives().length',
                                                 span([
-                                                    span({
-                                                        dataBind: {
-                                                            text: 'filteredNarratives().length'
-                                                        }
-                                                    }),
                                                     ' of ',
                                                     span({
                                                         dataBind: {
                                                             text: 'narratives().length'
                                                         }
                                                     })
-                                                ]),
-                                                span({
-                                                    dataBind: {
-                                                        text: 'filteredNarratives().length'
-                                                    }
-                                                })),
+                                                ])),
                                             ' narratives',
                                             gen.if('filteredNarratives().length < narratives().length',
                                                 span([

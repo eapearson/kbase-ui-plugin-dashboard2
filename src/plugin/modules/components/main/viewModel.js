@@ -78,7 +78,7 @@ define([
             // STARTUP
             this.loadNarratives();
 
-            
+
 
             this.actions = {
                 deleteNarrative: (narrative) => {
@@ -204,7 +204,7 @@ define([
                         return {
                             username: permission.username,
                             profile: this.makeProfileVM(permission.username, permission.profile),
-                            permission: ko.observable(permission.perm)
+                            permission: ko.observable(permission.permission)
                         };
                     })),
                 apps: narrative.apps

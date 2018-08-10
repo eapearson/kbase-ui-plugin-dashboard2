@@ -89,9 +89,12 @@ define([
                 if (this.appCache[tag]) {
                     return this.appCache[tag];
                 }
-                return this.rpc.call('NarrativeMethodStore', 'list_methods', {
+                const nms = this.runtime.service('rpc').makeClient({
+                    module: 'NarrativeMethodStore'
+                });
+                return nms.callFunc('list_methods', [{
                     tag: tag
-                })
+                }])
                     .spread((release) => {
                         this.appCache[tag] = release.reduce((apps, app) => {
                             apps[app.id] = {
@@ -112,9 +115,12 @@ define([
                 // if (this.appCache[tag]) {
                 //     return this.appCache[tag];
                 // }
-                return this.rpc.call('NarrativeMethodStore', 'get_method_brief_info', {
+                const nms = this.runtime.service('rpc').makeClient({
+                    module: 'NarrativeMethodStore'
+                });
+                return nms.callFunc('get_method_brief_info', [{
                     ids: appIds
-                })
+                }])
                     .spread((appSpecs) => {
                         // this.appCache[tag] = release.reduce((apps, app) => {
                         //     apps[app.id] = {
@@ -131,13 +137,12 @@ define([
 
         getNarratives2() {
             // TODO undo this
-            let profiles;
             return this.dashboardService.callFunc('list_all_narratives', [{}])
                 .spread((result, error, stats) => {
-                    console.log('stats', stats);
+                    console.log('stats', stats, result, error);
 
-                    profiles = result.profiles.reduce((profiles, profile) => {
-                        profiles[profile.user.username] = profile;
+                    const profilesMap = result.profiles.reduce((profiles, [username, profile]) => {
+                        profiles[username] = profile;
                         return profiles;
                     }, {});
 
@@ -146,14 +151,21 @@ define([
                         narrative.modifiedAt = new Date(narrative.modifiedTime);
                         return narrative;
                     });
-                    return narratives;
-                })
-                .then((narratives) => {
+
                     narratives.forEach((narrative) => {
-                        narrative.permissions.forEach((permission) => {
-                            permission.profile = profiles[permission.username] || null;
+                        narrative.permissions = narrative.permissions.map(([username, permission]) => {
+                            return {
+                                username: username,
+                                permission: permission,
+                                profile: profilesMap[username] || null
+                            };
                         });
                     });
+                    // narratives.forEach((narrative) => {
+                    //     narrative.permissions.forEach(([username, permission]) => {
+                    //         permission.profile = profiles[permission.username] || null;
+                    //     });
+                    // });
                     return narratives;
                 })
                 .then((narratives) => {
@@ -162,7 +174,10 @@ define([
         }
 
         getUserProfile(username) {
-            return this.rpc.call('UserProfile', 'get_user_profile', [username])
+            const client = this.runtime.service('rpc').makeClient({
+                module: 'UserProfile'
+            });
+            return client.callFunc('get_user_profile', [[username]])
                 .spread(([profile]) => {
                     return profile;
                     // return {

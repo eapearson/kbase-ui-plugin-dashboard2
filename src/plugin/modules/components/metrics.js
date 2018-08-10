@@ -98,10 +98,10 @@ define([
 
     function buildHistogram() {
         return  div([
-            gen.koLet({
+            gen.let({
                 chartLength: 'histogram.chart.length'
             },
-            gen.koForeach('histogram.chart',
+            gen.foreach('histogram.chart',
                 // This is the column!
                 div({
                     style: {
@@ -155,7 +155,7 @@ define([
                             textAlign: 'center'
                         }
                     }, [
-                        gen.koIf('upper - lower === 1',
+                        gen.if('upper - lower === 1',
                             // then
                             span({
                                 dataBind: {
@@ -164,7 +164,7 @@ define([
                             }),
                             // else
                             // TODO: special case for last, or calculate this in advance.
-                            gen.koIf('$index() === (chartLength - 1)',
+                            gen.if('$index() === (chartLength - 1)',
                                 span({
                                     dataBind: {
                                         text: 'String(lower) + "-" + String(upper)'
@@ -262,7 +262,7 @@ define([
                     borderBottom: '1px #CECECE solid'
                 }
             }),
-            gen.koIfLet({
+            gen.ifLet({
                 histogram: 'narrativesHistogram()'
             }, buildHistogram())
         ])));
@@ -293,7 +293,7 @@ define([
                     borderBottom: '1px #CECECE solid'
                 }
             }),
-            gen.koIfLet({
+            gen.ifLet({
                 histogram: 'sharedNarrativesHistogram()'
             }, buildHistogram())
         ])));

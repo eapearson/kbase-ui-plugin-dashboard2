@@ -91,13 +91,13 @@ define([
                                     ]),
                                     span([
                                         'Showing ',
+                                        span({
+                                            dataBind: {
+                                                text: 'narrativesFilteredCount()'
+                                            }
+                                        }),
                                         gen.if('narrativesFilteredCount() < narratives().length',
                                             span([
-                                                span({
-                                                    dataBind: {
-                                                        text: 'narrativesFilteredCount()'
-                                                    }
-                                                }),
                                                 ' of ',
                                                 span({
                                                     dataBind: {

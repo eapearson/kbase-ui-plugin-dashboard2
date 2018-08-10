@@ -6,6 +6,11 @@ define([
     'use strict';
     const permissions = [
         {
+            value: 'n',
+            icon: 'ban',
+            label: 'No Permission'
+        },
+        {
             value: 'r',
             icon: 'eye',
             label: 'Read Only'
@@ -27,14 +32,15 @@ define([
         return permissionsMap;
     }, {});
 
-
     class UserPermission {
         constructor(permission) {
             this.permission = permission;
             this.label = ko.pureComputed(() => {
+                console.log('label???', this.permission());
                 return permissionsMap[this.permission()].label;
             });
             this.icon = ko.pureComputed(() => {
+                console.log('icon???', this.permission());
                 return permissionsMap[this.permission()].icon;
             });
         }
