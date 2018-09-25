@@ -17,7 +17,7 @@ define([
         constructor(params, context) {
             super(params);
 
-            let runtime = context['$root'].runtime;
+            const runtime = context['$root'].runtime;
 
             // TODO: all runtime stuff should actually be set in params...
             //       ... other than service urls?
@@ -28,7 +28,7 @@ define([
 
             // Evaluate dev mode and app tag behavior.
 
-            let roles = runtime.service('session').getRoles().map((role) => {
+            const roles = runtime.service('session').getRoles().map((role) => {
                 return role.id;
             });
 
@@ -47,7 +47,7 @@ define([
             });
 
             this.narrativeFilter = ko.pureComputed(() => {
-                let input = this.narrativeFilterInput();
+                const input = this.narrativeFilterInput();
                 let regex;
                 if (!input) {
                     regex = null;
@@ -107,7 +107,7 @@ define([
                 .then((narratives) => {
                     // now create a view model version of the narratives.
 
-                    let n = narratives.map((narrative) => {
+                    const n = narratives.map((narrative) => {
                         // some top level properties.
                         return this.narrativeModelToViewModel(narrative);
                     })
@@ -123,42 +123,44 @@ define([
         }
 
         appViewModel(app) {
-            let appVM = {
-                type: app.type,
-                // key: app.key,
-                id: app.id,
-                count: app.count,
-                spec: app.spec,
+            const appVM = {
+                // WHAT IS THIS?
+                // type: app.type,
+                id: app.appId,
+                module: null,
                 name: null,
+                // key: app.key,
+                count: app.count,
                 state: null,
                 title: null,
-                iconUrl: null
+                iconURL: null
             };
 
             // if (app.type === 'app') {
             // console.log('app view model...', app);
             // }
 
-            if (app.obsolete) {
+            if (!app.appInfo) {
                 // old methods not supported at all.
-                appVM.name = app.id.name;
-                appVM.state = 'error',
+                appVM.state = 'error';
+                appVM.name = app.appId;
                 appVM.title = 'Pre-SDK methods not supported';
             } else {
                 // old style apps without modules (pre-sdk) are not supported either.
-                if (!app.id.module) {
-                    appVM.name = app.id.name;
+                if (!app.appInfo.module) {
+                    app.name = app.appId;
                     appVM.state = 'error';
                     appVM.title = 'Pre-SDK apps not supported';
                 } else {
-                    let appId = app.id.module + '/' + app.id.name;
+                    // const appId = app.id.module + '/' + app.id.name;
+                    appVM.module = app.appInfo.module;
+                    appVM.name = app.appInfo.name;
                     if (!app.notFound) {
-                        appVM.name = app.title;
                         appVM.state = 'ok';
-                        appVM.title = app.title;
-                        appVM.iconUrl = props.getProp(app, 'iconUrl', null);
+                        appVM.title = app.appInfo.title;
+                        appVM.iconURL = app.appInfo.iconURL;
+                        // appVM.iconURL = props.getProp(app, ['appInfo', 'iconURL'], null);
                     } else {
-                        appVM.name = appId;
                         appVM.state = 'error';
                         appVM.title = 'App not found';
                     }
@@ -245,7 +247,6 @@ define([
         makeAvatar(profile) {
             switch (props.getProp(profile, 'profile.userdata.avatarOption', null) || 'gravatar') {
             case 'gravatar':
-            // console.log('gravatar??', props.hasProp(profile, 'profile.synced.gravatarHash'), )
                 if (props.hasProp(profile, 'profile.synced.gravatarHash')) {
                     var gravatarDefault = props.getProp(profile, 'profile.userdata.gravatarDefault', null) || 'identicon';
                     var gravatarHash = props.getProp(profile, 'profile.synced.gravatarHash', null);
@@ -295,7 +296,6 @@ define([
         // }
 
         shareNarrative(narrative, username, permission) {
-            // console.log('sharing with', narrative.ref.workspaceId, narrative.modifiedAt.getTime(), username, permission)
             return this.model.shareNarrative(narrative.ref.workspaceId, username, permission)
                 .then(() => {
                     return this.model.getUserProfile(username)
@@ -366,7 +366,7 @@ define([
         }
 
         doOpenNarrative(narrative) {
-            let narrativeUrl = [
+            const narrativeUrl = [
                 '/narrative/ws',
                 narrative.ref.workspaceId,
                 'obj',

@@ -1,15 +1,17 @@
 define([
     'kb_knockout/lib/generators',
-    'kb_common/html',
+    'kb_lib/html',
+    'kb_lib/htmlBuilders',
     '../common'
 ], function (
     gen,
     html,
+    builders,
     common
 ) {
     'use strict';
 
-    var t = html.tag,
+    const t = html.tag,
         div = t('div'),
         span = t('span');
 
@@ -66,7 +68,7 @@ define([
                         }
                     }, [
                         gen.if('loading',
-                            span({style: {fontSize: '80%'}}, html.loading()),
+                            span({style: {fontSize: '80%'}}, builders.loading()),
                             gen.if('narratives().length === 0',
                                 span('Sorry, no narratives found in this category'),
                                 gen.if('narrativesFilteredCount() === 0',

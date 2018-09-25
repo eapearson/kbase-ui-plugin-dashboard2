@@ -1,28 +1,40 @@
 define([
     'bluebird',
-    'kb_service/utils',
-    'kb_common/utils',
+    'kb_lib/workspaceUtils',
+    'kb_lib/props',
     './rpc'
 ], function (
     Promise,
-    APIUtils,
-    Utils,
+    workspaceUtils,
+    props,
     Rpc
 ) {
     'use strict';
 
+    function objectToArray(obj, keyName, valueName) {
+        var keys = Object.keys(obj);
+        var arr = [];
+        for (var i in keys) {
+            var newObj = {};
+            newObj[keyName] = keys[i];
+            newObj[valueName] = obj[keys[i]];
+            arr.push(newObj);
+        }
+        return arr;
+    }
+
     function factory(config) {
-        let runtime = config.runtime;
+        const runtime = config.runtime;
 
         var rpc = new Rpc({
             runtime: runtime
         });
 
         function makeAvatar(profile) {
-            switch (Utils.getProp(profile, 'profile.userdata.avatarOption', null) || 'gravatar') {
+            switch (props.getProp(profile, 'profile.userdata.avatarOption', null) || 'gravatar') {
             case 'gravatar':
-                if (Utils.hasProp(profile, 'profile.synced.gravatarHash')) {
-                    var gravatarDefault = Utils.getProp(profile, 'profile.userdata.gravatarDefault', null) || 'identicon';
+                if (props.hasProp(profile, 'profile.synced.gravatarHash')) {
+                    var gravatarDefault = props.getProp(profile, 'profile.userdata.gravatarDefault', null) || 'identicon';
                     var gravatarHash = profile.profile.synced.gravatarHash;
                     if (gravatarHash) {
                         return 'https://www.gravatar.com/avatar/' + gravatarHash + '?s=32&amp;r=pg&d=' + gravatarDefault;
@@ -39,13 +51,13 @@ define([
             }
         }
 
-        let narrativePerms = {};
+        const narrativePerms = {};
         function getNarrativePermissions(narratives) {
             return Promise.try(function () {
                 if (narratives.length === 0) {
                     return [];
                 }
-                let permParams = narratives
+                const permParams = narratives
                     .filter((toGet) => {
                         return narrativePerms[toGet.id] ? false : true;
                     })
@@ -54,7 +66,7 @@ define([
                             id: narrative.workspace.id
                         };
                     });
-                let username = runtime.service('session').getUsername();
+                const username = runtime.service('session').getUsername();
                 return rpc.call('Workspace', 'get_permissions_mass', {
                     workspaces: permParams
                 })
@@ -64,7 +76,7 @@ define([
                         });
 
                         narratives.forEach((narrative) => {
-                            narrative.permissions = Utils.object_to_array(narrativePerms[narrative.workspace.id], 'username', 'permission')
+                            narrative.permissions = objectToArray(narrativePerms[narrative.workspace.id], 'username', 'permission')
                                 .filter(function (x) {
                                     return !(x.username === username ||
                                             x.username === '*' ||
@@ -80,17 +92,17 @@ define([
                                 });
                         });
 
-                        let users = narratives.reduce((users, narrative) => {
+                        const users = narratives.reduce((users, narrative) => {
                             narrative.permissions.forEach((permission) => {
                                 users[permission.username] = true;
                             });
                             return users;
                         }, {});
 
-                        let userList = Object.keys(users);
+                        const userList = Object.keys(users);
                         return rpc.call('UserProfile', 'get_user_profile', userList)
                             .spread((profiles) => {
-                                let users = profiles.reduce((users, profile, index) => {
+                                const users = profiles.reduce((users, profile, index) => {
                                     if (profile === null) {
                                         console.warn('user without profile', userList[index]);
                                         users[userList[index]] = {
@@ -103,7 +115,7 @@ define([
                                         users[profile.user.username] = {
                                             username: profile.user.username,
                                             realname: profile.user.realname,
-                                            gravatarDefault: Utils.getProp(profile, 'profile.userdata.gravatarDefault', null),
+                                            gravatarDefault: props.getProp(profile, 'profile.userdata.gravatarDefault', null),
                                             avatarUrl: makeAvatar(profile)
                                         };
                                     }
@@ -122,7 +134,7 @@ define([
             });
         }
 
-        let appCache = {};
+        const appCache = {};
         function getApps(tag) {
             // TODO: hmm, used to use the release tag for prod, dev otherwise.
             // good, or bad?
@@ -146,7 +158,7 @@ define([
             });
         }
 
-        function calcNarrativesHistogram (narrativeData, userValue) {
+        function calcNarrativesHistogram(narrativeData, userValue) {
             // Just dummy data for now.
             var stats = narrativeData;
             var bins = stats.histogram;
@@ -161,14 +173,14 @@ define([
             minBinSize = Math.min(minBinSize, userValue);
 
             var chartHeight = maxBinSize + maxBinSize / 10;
-            var setup = bins.bins.map(function(col) {
+            var setup = bins.bins.map(function (col) {
                 col.width = width;
                 col.height = Math.round(100 * col.count / chartHeight);
                 return col;
             });
 
-                // user scaled to histogram.
-                // put user value into the correct bin.
+            // user scaled to histogram.
+            // put user value into the correct bin.
             var userBin;
             for (var i = 0; i < bins.bins.length; i++) {
                 var bin = bins.bins[i];
@@ -223,7 +235,7 @@ define([
             minBinSize = Math.min(minBinSize, userValue);
 
             var chartHeight = maxBinSize + maxBinSize / 10;
-            var setup = bins.bins.map(function(col) {
+            var setup = bins.bins.map(function (col) {
                 col.width = width;
                 col.height = Math.round(100 * col.count / chartHeight);
                 return col;
@@ -298,30 +310,30 @@ define([
                 rpc.call('NarrativeService', 'list_narratives', { type: 'shared' })
             ])
                 .then(function (results) {
-                    let narratives = results
+                    const narratives = results
                         .reduce(function (accum, result) {
                             return accum.concat(result[0].narratives);
                         }, [])
                         .map(function (narrative) {
-                            narrative.object = APIUtils.object_info_to_object(narrative.nar);
-                            narrative.workspace = APIUtils.workspaceInfoToObject(narrative.ws);
+                            narrative.object = workspaceUtils.objectInfoToObject(narrative.nar);
+                            narrative.workspace = workspaceUtils.workspaceInfoToObject(narrative.ws);
                             return narrative;
                         });
 
                     return getNarrativePermissions(narratives);
                 })
                 .then(function (narratives) {
-                    let collaborators = narratives.reduce((collaborators, narrative) => {
+                    const collaborators = narratives.reduce((collaborators, narrative) => {
                         narrative.permissions.forEach((permission) => {
                             // omit the public user.
                             if (permission.username === '*') {
                                 return;
                             }
-                            Utils.incrProp(collaborators, permission.username);
+                            props.incrProp(collaborators, permission.username);
                         });
                         return collaborators;
                     }, {});
-                    let profilesToFetch = Object.keys(collaborators);
+                    const profilesToFetch = Object.keys(collaborators);
                     return rpc.call('UserProfile', 'get_user_profile', profilesToFetch)
                         .spread((userProfiles) => {
                             // console.log('collabs?', collabs, usersToFetch, data);
@@ -366,7 +378,7 @@ define([
                 filter: query
             })
                 .spread(function (users) {
-                    let usernames = users.map((user) => {
+                    const usernames = users.map((user) => {
                         return user.username;
                     });
                     return rpc.call('UserProfile', 'get_user_profile', usernames);
@@ -431,19 +443,19 @@ define([
         }
 
         function processNarratives(narrativeData) {
-            let narratives = new Array(narrativeData.length);
-            let username = runtime.service('session').getUsername();
+            const narratives = new Array(narrativeData.length);
+            const username = runtime.service('session').getUsername();
 
             for (let i = 0; i < narrativeData.length; i += 1) {
-                let narrative = narrativeData[i];
-                let workspace = APIUtils.workspaceInfoToObject(narrative.ws);
+                const narrative = narrativeData[i];
+                const workspace = workspaceUtils.workspaceInfoToObject(narrative.ws);
                 if (workspace.metadata.is_temporary === 'true') {
                     continue;
                 }
 
-                let object = APIUtils.object_info_to_object(narrative.nar);
-                let cellTypes = { app: 0, markdown: 0, code: 0 };
-                let apps = [];
+                const object = workspaceUtils.objectInfoToObject(narrative.nar);
+                const cellTypes = { app: 0, markdown: 0, code: 0 };
+                const apps = [];
 
                 if (object.metadata) {
                     // Convert some narrative-specific metadata properties.
@@ -490,8 +502,8 @@ define([
                     // "cellInfo" by objectInfoToObject
                     if (object.metadata.cellInfo) {
                         // console.log('OLD NARRATIVE', object.metadata.cellInfo, workspace, object);
-                        cellTypes.code += Utils.getProp(object.metadata.cellInfo, 'ipython.code', 0);
-                        cellTypes.markdown += Utils.getProp(object.metadata.cellInfo, 'ipython.markdown', 0);
+                        cellTypes.code += props.getProp(object.metadata.cellInfo, 'ipython.code', 0);
+                        cellTypes.markdown += props.getProp(object.metadata.cellInfo, 'ipython.markdown', 0);
                         // aps.push({
                         //     type: 'app',
                         //     key: keyParts[1],
@@ -516,10 +528,10 @@ define([
                         * jupyter.markdown: "n" and
                         * jupyter.code: "n"
                         */
-                    let appOccurences = {};
+                    const appOccurences = {};
                     let parsedId;
                     Object.keys(object.metadata).forEach((key) => {
-                        let keyParts = key.split('.');
+                        const keyParts = key.split('.');
                         switch (keyParts[0]) {
                         case 'method':
                             // New style app cells have the metadata prefix set to
@@ -537,7 +549,7 @@ define([
                                 // info: ko.observable()
                             });
                             cellTypes['app'] += 1;
-                            Utils.incrProp(appOccurences, parsedId.shortRef);
+                            props.incrProp(appOccurences, parsedId.shortRef);
                             break;
                         case 'app':
                             // Old style kbase (markdown-app) cells used "app." as the
@@ -556,7 +568,7 @@ define([
                                 // info: ko.observable()
                             });
                             cellTypes['app'] += 1;
-                            Utils.incrProp(appOccurences, parsedId.shortRef);
+                            props.incrProp(appOccurences, parsedId.shortRef);
                             break;
                         case 'ipython':
                         case 'jupyter':
@@ -631,8 +643,8 @@ define([
                     // First loop through the workspaces is to collect the object ids so
                     // we can get the object info.
                     narrativeWorkspaces.forEach((info, index) => {
-                        let workspaceInfo = APIUtils.workspaceInfoToObject(info);
-                        let narrativeObjectId = parseInt(workspaceInfo.metadata.narrative, 10);
+                        const workspaceInfo = workspaceUtils.workspaceInfoToObject(info);
+                        const narrativeObjectId = parseInt(workspaceInfo.metadata.narrative, 10);
                         if (isNaN(narrativeObjectId)) {
                             skipped += 1;
                             return;
@@ -658,7 +670,7 @@ define([
                         .spread((result) => {
                             result.infos.forEach((info, index) => {
                                 if (info !== null) {
-                                    narratives[index].object = APIUtils.objectInfoToObject(info);
+                                    narratives[index].object = workspaceUtils.objectInfoToObject(info);
                                     narratives[index].path = result.paths[index];
                                 }
                             });
@@ -670,13 +682,13 @@ define([
                 .then((narratives) => {
                     narratives.forEach((narrative) => {
                         // Now make sense of narrative metadata.
-                        let cellTypes = {
+                        const cellTypes = {
                             app: 0,
                             markdown: 0,
                             code: 0
                         };
-                        let apps = [];
-                        let metadata = narrative.object.metadata;
+                        const apps = [];
+                        const metadata = narrative.object.metadata;
 
                         // Convert some narrative-specific metadata properties.
                         if (metadata.job_info) {
@@ -701,8 +713,8 @@ define([
                             * }
                             */
                         if (metadata.cellInfo) {
-                            cellTypes.code += Utils.getProp(metadata.cellInfo, 'ipython.code', 0);
-                            cellTypes.markdown += Utils.getProp(metadata.cellInfo, 'ipython.markdown', 0);
+                            cellTypes.code += props.getProp(metadata.cellInfo, 'ipython.code', 0);
+                            cellTypes.markdown += props.getProp(metadata.cellInfo, 'ipython.markdown', 0);
                         }
 
                         /* New narrative metadata is stored as a flat set of
@@ -716,10 +728,10 @@ define([
                             * jupyter.markdown: "n" and
                             * jupyter.code: "n"
                             */
-                        let appOccurences = {};
+                        const appOccurences = {};
                         let parsedId;
                         Object.keys(metadata).forEach((key) => {
-                            let keyParts = key.split('.');
+                            const keyParts = key.split('.');
                             switch (keyParts[0]) {
                             case 'method':
                                 // New style app cells have the metadata prefix set to
@@ -732,7 +744,7 @@ define([
                                     count: parseInt(metadata[key]),
                                 });
                                 cellTypes.app += 1;
-                                Utils.incrProp(appOccurences, parsedId.shortRef);
+                                props.incrProp(appOccurences, parsedId.shortRef);
                                 break;
                             case 'app':
                                 // Old style kbase (markdown-app) cells used "app." as the
@@ -746,7 +758,7 @@ define([
                                     count: parseInt(metadata[key]),
                                 });
                                 cellTypes.app += 1;
-                                Utils.incrProp(appOccurences, parsedId.shortRef);
+                                props.incrProp(appOccurences, parsedId.shortRef);
                                 break;
                             case 'ipython':
                             case 'jupyter':
@@ -769,20 +781,20 @@ define([
                     return narratives;
                 })
                 .then((narratives) => {
-                    let permParams = narratives
+                    const permParams = narratives
                         .map((narrative) => {
                             return {
                                 id: narrative.workspace.id
                             };
                         });
-                    let currentUsername = runtime.service('session').getUsername();
+                    const currentUsername = runtime.service('session').getUsername();
                     return rpc.call('Workspace', 'get_permissions_mass', {
                         workspaces: permParams
                     })
                         .spread(function (result) {
                             result.perms.forEach((permissions, index) => {
                                 // The permission comes back as a map of username to permission.
-                                let perms = Object.keys(permissions).reduce((perms, username) => {
+                                const perms = Object.keys(permissions).reduce((perms, username) => {
                                     // Filter out owner, public user, and workspace owner.
                                     if (username === currentUsername ||
                                         username === '*' ||
@@ -804,17 +816,17 @@ define([
                 .then((narratives) => {
                     // now, yuck, we need to get the user profile for all users with permissions.
                     // If this were super fast and slick we could just do this later...
-                    let users = narratives.reduce((users, narrative) => {
+                    const users = narratives.reduce((users, narrative) => {
                         narrative.permissions.forEach((permission) => {
                             users[permission.username] = true;
                         });
                         return users;
                     }, {});
 
-                    let userList = Object.keys(users);
+                    const userList = Object.keys(users);
                     return rpc.call('UserProfile', 'get_user_profile', userList)
                         .spread((profiles) => {
-                            let users = profiles.reduce((users, profile, index) => {
+                            const users = profiles.reduce((users, profile, index) => {
                                 if (profile === null) {
                                     console.warn('user without profile', userList[index]);
                                     users[userList[index]] = {
@@ -827,7 +839,7 @@ define([
                                     users[profile.user.username] = {
                                         username: profile.user.username,
                                         realname: profile.user.realname,
-                                        gravatarDefault: Utils.getProp(profile, 'profile.userdata.gravatarDefault', null),
+                                        gravatarDefault: props.getProp(profile, 'profile.userdata.gravatarDefault', null),
                                         avatarUrl: makeAvatar(profile)
                                     };
                                 }

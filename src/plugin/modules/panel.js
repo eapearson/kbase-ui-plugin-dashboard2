@@ -1,15 +1,15 @@
 define([
     'module',
     'promise',
-    'kb_ko/KO',
-    'kb_ko/lib/generators',
-    'kb_common/html',
+    'knockout',
+    'kb_knockout/lib/generators',
+    'kb_lib/html',
     './components/main/component',
     './model'
 ], function (
     module,
     Promise,
-    KO,
+    ko,
     gen,
     html,
     MainComponent,
@@ -17,24 +17,22 @@ define([
 ) {
     'use strict';
 
-    let t = html.tag,
+    const t = html.tag,
         div = t('div');
 
-    let ko = KO.ko;
-
     function createRootComponent(runtime, name) {
-        let pluginPath = module.uri.split('/').slice(1, -2).join('/');
-        let model = new Model({
+        const pluginPath = module.uri.split('/').slice(1, -2).join('/');
+        const model = new Model({
             runtime: runtime
         });
-        let vm = {
+        const vm = {
             runtime: runtime,
             running: ko.observable(false),
             initialParams: ko.observable(),
             pluginPath: pluginPath,
             model: model
         };
-        let temp = document.createElement('div');
+        const temp = document.createElement('div');
         temp.innerHTML = div({
             style: {
                 flex: '1 1 0px',
@@ -43,7 +41,7 @@ define([
             },
             dataKBTesthookPlugin: 'dashboard'
         }, gen.if('running',
-            KO.komponent({
+            gen.component({
                 name: name,
                 params: {
                     runtime: 'runtime',
@@ -51,8 +49,8 @@ define([
                     model: 'model'
                 }
             })));
-        let node = temp.firstChild;
-        ko.applyBindings(vm, node, function (context) {
+        const node = temp.firstChild;
+        ko.applyBindings(vm, node, (context) => {
             context.runtime = runtime;
             // context.pluginPath = pluginPath;
         });
@@ -74,47 +72,40 @@ define([
         };
     }
 
-    function widget(config) {
-        let hostNode, container, rootComponent,
-            runtime = config.runtime;
+    class Panel {
+        constructor({runtime}) {
+            this.runtime = runtime;
+
+            this.hostNode = null;
+            this.container = null;
+            this.rootComponent = null;
+        }
 
         // API
-        function attach(node) {
-            return Promise.try(function () {
-                hostNode = node;
-
-                rootComponent = createRootComponent(runtime, MainComponent.name());
-                container = hostNode.appendChild(rootComponent.node);
+        attach(node) {
+            return Promise.try(() => {
+                this.hostNode = node;
+                this.rootComponent = createRootComponent(this.runtime, MainComponent.name());
+                this.container = this.hostNode.appendChild(this.rootComponent.node);
             });
         }
 
-        function start(params) {
-            runtime.send('ui', 'setTitle', 'Your Dashboard');
-            rootComponent.start(params);
+        start(params) {
+            this.runtime.send('ui', 'setTitle', 'Your Dashboard');
+            this.rootComponent.start(params);
         }
 
 
-        function stop() {
-            rootComponent.stop();
+        stop() {
+            this.rootComponent.stop();
         }
 
-        function detach() {
-            if (hostNode && container) {
-                hostNode.removeChild(container);
+        detach() {
+            if (this.hostNode && this.container) {
+                this.hostNode.removeChild(this.container);
             }
         }
-
-        return {
-            attach: attach,
-            start: start,
-            stop: stop,
-            detach: detach
-        };
     }
 
-    return {
-        make: function (config) {
-            return widget(config);
-        }
-    };
+    return Panel;
 });

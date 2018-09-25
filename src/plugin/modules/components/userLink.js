@@ -1,7 +1,7 @@
 define([
     'kb_knockout/registry',
     'kb_knockout/lib/viewModelBase',
-    'kb_common/html'
+    'kb_lib/html'
 ], function (
     reg,
     ViewModelBase,
@@ -9,7 +9,7 @@ define([
 ) {
     'use strict';
 
-    let t = html.tag,
+    const t = html.tag,
         a = t('a');
 
     class ViewModel extends ViewModelBase {

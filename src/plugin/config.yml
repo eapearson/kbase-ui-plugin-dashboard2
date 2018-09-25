@@ -18,7 +18,7 @@ install:
         -
             module: panel
             id: dashboard2_panel
-            type: factory
+            type: es6
             css: true
     routes:
         -

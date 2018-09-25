@@ -1,10 +1,12 @@
 define([
     'kb_knockout/lib/generators',
-    'kb_common/html',
+    'kb_lib/html',
+    'kb_lib/htmlBuilders',
     './narrativeCard'
 ], function (
     gen,
     html,
+    builders,
     NarrativeCardComponent
 ) {
     'use strict';
@@ -14,8 +16,6 @@ define([
         p = t('p'),
         div = t('div'),
         span = t('span'),
-        label = t('label'),
-        select = t('select'),
         input = t('input');
 
     function buildButtonBar(options) {
@@ -110,7 +110,7 @@ define([
                 style: {
                     textAlign: 'center'
                 }
-            }, html.loading('Loading Narratives'))),
+            }, builders.loading('Loading Narratives'))),
             //else
             gen.if('narrativesAvailableCount() === 0',
                 // then

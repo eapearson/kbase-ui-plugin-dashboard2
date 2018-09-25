@@ -3,7 +3,7 @@ define([
     'kb_knockout/registry',
     'kb_knockout/lib/generators',
     'kb_knockout/lib/viewModelBase',
-    'kb_common/html',
+    'kb_lib/html',
     '../lib/data'
 ], function (
     ko,
@@ -15,7 +15,7 @@ define([
 ) {
     'use strict';
 
-    let t = html.tag,
+    const t = html.tag,
         div = t('div'),
         span = t('span'),
         input = t('input'),
@@ -37,9 +37,9 @@ define([
             this.omitUsers = params.omitUsers;
 
 
-            let runtime = context['$root'].runtime;
+            const runtime = context['$root'].runtime;
 
-            let data = Data.make({runtime});
+            const data = Data.make({runtime});
 
             this.users = ko.observableArray();
 
@@ -57,7 +57,7 @@ define([
                 }
                 data.userProfileSearch(newValue)
                     .then((profiles) => {
-                        let users = profiles
+                        const users = profiles
                             .filter((profile) => {
                                 return this.omitUsers()[profile.user.username] ? false : true;
                             })
@@ -118,7 +118,7 @@ define([
         }
     }
 
-    let styles = html.makeStyles({
+    const styles = html.makeStyles({
         component: {
             css: {
 

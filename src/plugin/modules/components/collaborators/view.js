@@ -1,10 +1,12 @@
 define([
     'kb_knockout/lib/generators',
-    'kb_common/html',
+    'kb_lib/html',
+    'kb_lib/htmlBuilders',
     '../table'
 ], function (
     gen,
     html,
+    builders,
     TableComponent
 ) {
     'use strict';
@@ -23,7 +25,13 @@ define([
     }
 
     function buildCollaborators() {
-        return div([
+        return div({
+            style: {
+                flex: '1 1 0px',
+                display: 'flex',
+                flexDirection: 'column'
+            }
+        }, [
             p([
                 'You have ',
                 span({
@@ -34,6 +42,11 @@ define([
                 ' collaborators.'
             ]),
             div({
+                style: {
+                    flex: '1 1 0px',
+                    display: 'flex',
+                    flexDirection: 'column'
+                },
                 dataBind: {
                     component: {
                         name: TableComponent.quotedName(),
@@ -58,14 +71,17 @@ define([
     }
 
     function buildLoading() {
-        return html.loading('Loading collaborators');
+        return builders.loading('Loading collaborators');
     }
 
     function buildPanel() {
         return div({
             class: 'panel panel-default kbase-widget',
             style: {
-                width: '100%'
+                width: '100%',
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column'
             },
             dataKBTesthookWidget: 'collaborators'
         }, [
@@ -104,7 +120,10 @@ define([
             div({
                 class: 'panel-body',
                 style: {
-                    backgroundColor: '#F5F5F5'
+                    backgroundColor: '#F5F5F5',
+                    flex: '1 1 0px',
+                    display: 'flex',
+                    flexDirection: 'column'
                 }
             }, [
                 div({
@@ -120,7 +139,13 @@ define([
     }
 
     function template() {
-        return div([
+        return div({
+            style: {
+                flex: '1 1 0px',
+                display: 'flex',
+                flexDirection: 'column'
+            }
+        }, [
             buildPanel()
         ]);
     }

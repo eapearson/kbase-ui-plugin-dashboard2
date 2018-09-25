@@ -3,8 +3,8 @@ define([
     'kb_knockout/registry',
     'kb_knockout/lib/generators',
     'kb_knockout/lib/viewModelBase',
-    'kb_common/html',
-    'kb_common/bootstrapUtils',
+    'kb_lib/html',
+    'kb_lib/htmlBuilders',
     '../../lib/ui',
     '../../lib/data',
     './userPermission'
@@ -14,19 +14,12 @@ define([
     gen,
     ViewModelBase,
     html,
-    BS,
+    builders,
     ui,
     Data,
     userPermission
 ) {
     'use strict';
-
-    var t = html.tag,
-        div = t('div'),
-        p = t('p'),
-        ul = t('ul'),
-        li = t('li'),
-        span = t('span');
 
     class ViewModel extends ViewModelBase {
         constructor(params, context) {
@@ -93,6 +86,13 @@ define([
                 });
         }
     }
+
+    const t = html.tag,
+        div = t('div'),
+        p = t('p'),
+        ul = t('ul'),
+        li = t('li'),
+        span = t('span');
 
     function buildMessaging() {
         return [
@@ -211,7 +211,7 @@ define([
             class: 'alert alert-info'
         }, [
             p([
-                html.loading('Deleting')
+                builders.loading('Deleting')
             ])
         ]);
     }

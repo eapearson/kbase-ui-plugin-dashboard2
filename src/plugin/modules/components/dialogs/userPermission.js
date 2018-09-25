@@ -1,6 +1,6 @@
 define([
     'knockout'
-], function(
+], function (
     ko
 ) {
     'use strict';
@@ -36,11 +36,11 @@ define([
         constructor(permission) {
             this.permission = permission;
             this.label = ko.pureComputed(() => {
-                console.log('label???', this.permission());
+                // console.log('label???', this.permission());
                 return permissionsMap[this.permission()].label;
             });
             this.icon = ko.pureComputed(() => {
-                console.log('icon???', this.permission());
+                // console.log('icon???', this.permission());
                 return permissionsMap[this.permission()].icon;
             });
         }

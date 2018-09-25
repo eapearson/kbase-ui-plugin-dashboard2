@@ -141,12 +141,12 @@ define([
                 .spread((result, error, stats) => {
                     console.log('stats', stats, result, error);
 
-                    const profilesMap = result.profiles.reduce((profiles, [username, profile]) => {
-                        profiles[username] = profile;
-                        return profiles;
-                    }, {});
+                    // const profilesMap = result.profiles.reduce((profiles, [username, profile]) => {
+                    //     profiles[username] = profile;
+                    //     return profiles;
+                    // }, {});
 
-                    let narratives = result.narratives.map((narrative) => {
+                    const narratives = result.narratives.map((narrative) => {
                         narrative.savedAt = new Date(narrative.savedTime);
                         narrative.modifiedAt = new Date(narrative.modifiedTime);
                         return narrative;
@@ -157,7 +157,14 @@ define([
                             return {
                                 username: username,
                                 permission: permission,
-                                profile: profilesMap[username] || null
+                                profile: result.profiles[username] || null
+                            };
+                        });
+                        narrative.apps = Object.keys(narrative.apps).map((appId) => {
+                            return {
+                                appId: appId,
+                                count: narrative.apps[appId],
+                                appInfo: result.apps[appId]
                             };
                         });
                     });

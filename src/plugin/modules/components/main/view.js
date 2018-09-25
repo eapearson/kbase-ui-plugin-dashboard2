@@ -1,7 +1,7 @@
 define([
     'knockout',
-    'kb_ko/components/overlayPanelBootstrappish',
-    'kb_common/html',
+    'kb_knockout/components/overlayPanel',
+    'kb_lib/html',
     '../toolbar',
     '../yourNarratives/component',
     '../sharedNarratives/component',
@@ -23,7 +23,7 @@ define([
 ) {
     'use strict';
 
-    let t = html.tag,
+    const t = html.tag,
         div = t('div');
 
     function template() {
@@ -43,7 +43,7 @@ define([
                         name: OverlayPanelComponent.quotedName(),
                         params: {
                             component: 'overlayComponent',
-                            hostVm: '$data'
+                            // hostVm: '$data'
                         }
                     }
                 }
@@ -157,9 +157,16 @@ define([
                     div({
                         style: {
                             flex: '1 1 0px',
-                            marginRight: '6px'
+                            marginRight: '6px',
+                            display: 'flex',
+                            flexDirection: 'column'
                         }
                     }, div({
+                        style: {
+                            flex: '1 1 0px',
+                            display: 'flex',
+                            flexDirection: 'column'
+                        },
                         dataBind: {
                             component: {
                                 name: CollaboratorsComponent.quotedName(),

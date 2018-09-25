@@ -9,9 +9,9 @@ define([], function () {
         }
 
         start(timer) {
-            let now = new Date().getTime();
+            const now = new Date().getTime();
             if (this.currentTimer) {
-                let timer = {
+                const timer = {
                     name: this.currentTimer,
                     started: this.started,
                     ended: now,
@@ -26,8 +26,8 @@ define([], function () {
 
         stop() {
             if (this.currentTimer) {
-                let now = new Date().getTime();
-                let timer = {
+                const now = new Date().getTime();
+                const timer = {
                     name: this.currentTimer,
                     started: this.started,
                     ended: now,

@@ -3,7 +3,7 @@ define([
     'kb_knockout/registry',
     'kb_knockout/lib/generators',
     'kb_knockout/lib/viewModelBase',
-    'kb_common/html'
+    'kb_lib/html'
 ], function (
     ko,
     reg,

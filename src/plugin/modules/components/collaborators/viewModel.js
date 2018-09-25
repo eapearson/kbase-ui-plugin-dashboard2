@@ -33,6 +33,9 @@ define([
                     maxHeight: '20em',
                     backgroundColor: '#FFF'
                 },
+                rowStyle: {
+                    borderBottom: '1px silver solid'
+                },
                 sort: {
                     column: ko.observable('count'),
                     direction: ko.observable('desc')
@@ -47,12 +50,12 @@ define([
                             // note params interpreted in the context
                             // of the row. So, username, realname are properties on the
                             // row, but true is the true value.
-                            // params: {
-                            //     username: 'username',
-                            //     realname: 'realname',
-                            //     newWindow: 'true'
-                            // }
-                            params: '{username: username, realname: realname, newWindow: true}'
+                            params: {
+                                username: 'username',
+                                realname: 'realname',
+                                newWindow: 'true'
+                            }
+                            // params: '{username: username, realname: realname, newWindow: true}'
                         },
                         sort: {
                             comparator: (a, b) => {
@@ -68,7 +71,7 @@ define([
                     {
                         name: 'username',
                         label: 'Username',
-                        width: 35,
+                        width: 30,
                         sort: {
                             comparator: (a, b) => {
                                 if (a < b) {
@@ -83,7 +86,7 @@ define([
                     {
                         name: 'count',
                         label: 'Collaborations',
-                        width: 20,
+                        width: 25,
                         sort: {
                             comparator: (a, b) => {
                                 if (a < b) {
@@ -102,16 +105,12 @@ define([
                 return map;
             }, {});
 
-            let direction = ko.pureComputed(() => {
-                return (this.table.sort.direction() === 'desc' ? -1 : 1);
-            });
-
             this.collaborators = ko.pureComputed(() => {
-                let n = this.narratives();
+                const n = this.narratives();
                 if (n.length === 0) {
                     return [];
                 }
-                let collabs = this.narratives()
+                const collabs = this.narratives()
                     .filter((narrative) => {
                         return ((narrative.owner !== this.username &&
                                  !narrative.isPublic() &&
@@ -134,16 +133,12 @@ define([
                         });
                         return collabs;
                     }, {});
-                let collabs2 = Object.keys(collabs).map((username) => {
+                const collabs2 = Object.keys(collabs).map((username) => {
                     return collabs[username];
-                });
-                collabs2.sort((a, b) => {
-                    let c = this.table.sort.column();
-                    let x = direction() * this.table.columnMap[c].sort.comparator(a[c], b[c]);
-                    return x;
                 });
                 return collabs2;
             });
+
         }
     }
 

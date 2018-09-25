@@ -1,17 +1,17 @@
 define([
-    'kb_common/html'
+    'kb_lib/html'
 ], function (
     html
 ) {
     'use strict';
 
-    let t = html.tag,
+    const t = html.tag,
         button = t('button'),
         span = t('span'),
         div = t('div');
 
     function buildDialog(arg) {
-        let type = arg.type || 'default';
+        const type = arg.type || 'default';
         let titleColor;
         let iconClass;
         switch (type) {
@@ -65,13 +65,13 @@ define([
             icon = '';
         }
 
-        let buttons = arg.buttons || [{
+        const buttons = arg.buttons || [{
             label: 'Close',
             onClick: 'onClose'
         }];
 
-        let buttonsContent = buttons.map(function (btn) {
-            let buttonBindings = {
+        const buttonsContent = buttons.map(function (btn) {
+            const buttonBindings = {
                 click: btn.onClick
             };
             if (btn.enable) {
@@ -160,7 +160,7 @@ define([
     }
 
     function buildFullHeightDialog(arg) {
-        let type = arg.type || 'default';
+        const type = arg.type || 'default';
         let titleColor;
         let iconClass;
         switch (type) {
@@ -202,12 +202,12 @@ define([
             icon = '';
         }
 
-        let buttons = arg.buttons || [{
+        const buttons = arg.buttons || [{
             label: 'Close',
             onClick: 'onClose'
         }];
 
-        let buttonsContent = buttons.map(function (btn) {
+        const buttonsContent = buttons.map(function (btn) {
             return button({
                 type: 'button',
                 class: 'btn btn-' + (btn.type || 'default'),

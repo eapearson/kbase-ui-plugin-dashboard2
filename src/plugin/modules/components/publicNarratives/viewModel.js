@@ -1,10 +1,6 @@
 define([
-    'knockout',
-    'kb_common/html',
     '../narrativeViewModelBase'
 ], function (
-    ko,
-    html,
     NarrativeViewModelBase
 ) {
     'use strict';

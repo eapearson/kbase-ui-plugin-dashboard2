@@ -3,31 +3,24 @@ define([
     'kb_knockout/registry',
     'kb_knockout/lib/generators',
     'kb_knockout/lib/viewModelBase',
-    'kb_common/html'
+    'kb_lib/html',
+    'kb_lib/htmlBuilders'
 ], function (
     ko,
     reg,
     gen,
     ViewModelBase,
-    html
+    html,
+    builders
 ) {
     'use strict';
-
-    var t = html.tag,
-        a = t('a'),
-        img = t('img'),
-        div = t('div'),
-        span = t('span'),
-        button = t('button'),
-        ul = t('ul'),
-        li = t('li');
 
     class ViewModel extends ViewModelBase {
         constructor(params, context, element) {
             super(params);
             // weird hack to get the second from top VM.
-            let $parents = context['$parents'];
-            let $root = $parents[$parents.length - 2];
+            const $parents = context['$parents'];
+            const $root = $parents[$parents.length - 2];
             this.$root = $root;
             // console.log('ROOT', $root);
             this.narrative = params.narrative;
@@ -50,7 +43,7 @@ define([
             // this.visible = ko.observable(this.showNarrative());
 
             this.subscribe(this.narrativeFilter, () => {
-                let show = this.showNarrative();
+                const show = this.showNarrative();
                 if (show) {
                     this.show(this.isVisible());
                 } else {
@@ -79,7 +72,7 @@ define([
             // this.doOpenNarrative = $root.doOpenNarrative;
             // this.doDeleteNarrative = $root.doDeleteNarrative;
 
-            let obs = new MutationObserver((mutationRecord, inst) => {
+            const obs = new MutationObserver(() => {
                 // console.log('mut', mutationRecord);
                 this.show(this.isVisible());
             });
@@ -96,14 +89,14 @@ define([
         }
 
         isVisible() {
-            let cl = this.containerNode.offsetLeft;
-            let cs = this.containerNode.scrollLeft;
-            let cw = this.containerNode.clientWidth;
-            let l = this.componentNode.offsetLeft;
-            let w = this.componentNode.offsetWidth;
+            const cl = this.containerNode.offsetLeft;
+            const cs = this.containerNode.scrollLeft;
+            const cw = this.containerNode.clientWidth;
+            const l = this.componentNode.offsetLeft;
+            const w = this.componentNode.offsetWidth;
 
-            let relativeLeft = (l - cl) - cs;
-            let relativeRight = relativeLeft + w;
+            const relativeLeft = (l - cl) - cs;
+            const relativeRight = relativeLeft + w;
             if (relativeRight < 0) {
                 return false;
             }
@@ -125,7 +118,7 @@ define([
         }
 
         showNarrative() {
-            let matcher = this.narrativeFilter().regex;
+            const matcher = this.narrativeFilter().regex;
             if (matcher === null) {
                 return true;
             }
@@ -148,7 +141,7 @@ define([
             return false;
         }
 
-        plural (singular, plural, count) {
+        plural(singular, plural, count) {
             if (count === 1) {
                 return singular;
             }
@@ -169,6 +162,15 @@ define([
         // }
     }
 
+    const t = html.tag,
+        a = t('a'),
+        img = t('img'),
+        div = t('div'),
+        span = t('span'),
+        button = t('button'),
+        ul = t('ul'),
+        li = t('li');
+
     function buildAppIcon() {
         // This is just for the icon!
         return span({
@@ -180,12 +182,12 @@ define([
             style: {
                 textAlign: 'center'
             }
-        },  gen.if('iconUrl',
+        },  gen.if('iconURL',
             //then
             img({
                 dataBind: {
                     attr: {
-                        src: '$component.methodStoreImageURL + iconUrl'
+                        src: '$component.methodStoreImageURL + iconURL'
                     }
                 },
                 style: {
@@ -209,7 +211,7 @@ define([
 
     function buildAppLabel() {
         return gen.ifnot('state',
-            span({style: {fontSize: '70%'}}, html.loading()),
+            span({style: {fontSize: '70%'}}, builders.loading()),
             gen.switch('state', [
                 [
                     '"error"',
@@ -221,7 +223,7 @@ define([
                             attr: {
                                 title: 'title',
                             },
-                            text: 'name'
+                            text: 'title'
                         }
                     })
                 ],
@@ -241,7 +243,7 @@ define([
                             attr: {
                                 title: 'title',
                             },
-                            text: 'name'
+                            text: 'title'
                         }
                     }))
                 ],
@@ -253,7 +255,7 @@ define([
                                 attr: {
                                     href: '"#appcatalog/app/" + id.shortRef'
                                 },
-                                text: 'name'
+                                text: 'title'
                             },
                             target: '_blank'
                         })
@@ -286,7 +288,7 @@ define([
                             attr: {
                                 title: 'title',
                             },
-                            text: 'name'
+                            text: 'title'
                         }
                     }))
                 ]
@@ -691,10 +693,10 @@ define([
                     class: '-body',
                     dataBind: {
                         event: {
-                            mouseover: function(data) {
+                            mouseover: function (data) {
                                 data.ui.active(true);
                             },
-                            mouseout: function(data) {
+                            mouseout: function (data) {
                                 data.ui.active(false);
                             }
                         },

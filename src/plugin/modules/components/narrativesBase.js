@@ -2,7 +2,8 @@ define([
     'knockout',
     'kb_knockout/lib/generators',
     'kb_knockout/lib/viewModelBase',
-    'kb_common/html',
+    'kb_lib/html',
+    'kb_lib/htmlBuilders',
     './common',
     '../lib/data',
     './dialogs/deleteNarrative',
@@ -12,6 +13,7 @@ define([
     gen,
     ViewModelBase,
     html,
+    builders,
     common,
     Data,
     DeleteNarrativeComponent,
@@ -19,15 +21,11 @@ define([
 ) {
     'use strict';
 
-    var t = html.tag,
-        div = t('div'),
-        span = t('span');
-
     class NarrativeViewModelBase extends ViewModelBase {
         constructor(params, context) {
             super(params);
 
-            let runtime = context['$root'].runtime;
+            const runtime = context['$root'].runtime;
 
             this.methodStoreImageURL = runtime.config('services.narrative_method_store.image_url');
             this.username = runtime.service('session').getUsername();
@@ -43,7 +41,7 @@ define([
             this.narratives = params.narratives.narratives;
             this.loading = params.narratives.loading;
 
-            this.plural = function(singular, plural, count) {
+            this.plural = function (singular, plural, count) {
                 if (count === 1) {
                     return singular;
                 }
@@ -53,15 +51,15 @@ define([
             this.narrativeFilter = params.narrativeFilter;
 
             this.filteredNarratives = ko.pureComputed(() => {
-                let narrativeFilter = this.narrativeFilter();
+                const narrativeFilter = this.narrativeFilter();
                 if (!narrativeFilter) {
                     return this.narratives();
                 }
                 if (narrativeFilter.length < 3) {
                     return this.narratives();
                 }
-                let filtered = this.narratives().filter((narrative) => {
-                    let matcher = new RegExp(narrativeFilter, 'i');
+                const filtered = this.narratives().filter((narrative) => {
+                    const matcher = new RegExp(narrativeFilter, 'i');
                     if (matcher.test(narrative.workspace.metadata.narrative_nice_name)) {
                         return true;
                     }
@@ -107,7 +105,7 @@ define([
         // ACTIONS
 
         doOpenNarrative(data) {
-            let narrativeUrl = '/narrative/ws.' + data.workspace.id + '.obj.' + data.object.id;
+            const narrativeUrl = '/narrative/ws.' + data.workspace.id + '.obj.' + data.object.id;
             window.open(narrativeUrl, '_blank');
         }
 
@@ -139,6 +137,10 @@ define([
             });
         }
     }
+
+    var t = html.tag,
+        div = t('div'),
+        span = t('span');
 
     class Component {
         constructor(options) {
@@ -199,7 +201,7 @@ define([
                             }
                         }, [
                             gen.if('loading',
-                                span({style: {fontSize: '80%'}}, html.loading()),
+                                span({style: {fontSize: '80%'}}, builders.loading()),
                                 gen.if('narratives().length === 0',
                                     span('Sorry, no narratives found in this category'),
                                     gen.if('filteredNarratives().length === 0',

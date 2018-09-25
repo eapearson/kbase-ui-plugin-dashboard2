@@ -1,6 +1,6 @@
 define([
     'knockout',
-    'kb_common/html',
+    'kb_lib/html',
     'kb_knockout/lib/viewModelBase',
     './common',
     './dialogs/deleteNarrative',
@@ -22,7 +22,7 @@ define([
             this.started = new Date().getTime();
 
             // import runtime
-            let runtime = context['$root'].runtime;
+            const runtime = context['$root'].runtime;
             this.methodStoreImageURL = runtime.config('services.narrative_method_store.image_url');
             this.username = runtime.service('session').getUsername();
 
@@ -118,7 +118,7 @@ define([
                 this.forceScroll();
             });
 
-            let obs = new MutationObserver((mutationRecord, inst) => {
+            const obs = new MutationObserver(() => {
                 // console.log('mut', mutationRecord);
                 // this.show(this.isVisible());
                 this.forceScroll();
@@ -144,7 +144,7 @@ define([
             return true;
         }
 
-        plural (singular, plural, count) {
+        plural(singular, plural, count) {
             if (count === 1) {
                 return singular;
             }
@@ -162,7 +162,7 @@ define([
         // ACTIONS
 
         doOpenNarrative(narrative) {
-            let narrativeUrl = [
+            const narrativeUrl = [
                 '/narrative/ws',
                 narrative.ref.workspaceId,
                 'obj',

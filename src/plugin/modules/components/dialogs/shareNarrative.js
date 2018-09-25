@@ -4,8 +4,8 @@ define([
     'kb_knockout/registry',
     'kb_knockout/lib/generators',
     'kb_knockout/lib/viewModelBase',
-    'kb_common/html',
-    'kb_common/bootstrapUtils',
+    'kb_lib/html',
+    'kb_lib/htmlBuilders',
     '../../lib/ui',
     '../userSearch',
     './userPermission'
@@ -15,36 +15,18 @@ define([
     gen,
     ViewModelBase,
     html,
-    BS,
+    builders,
     ui,
     UserSearchComponent,
     UserPermission
 ) {
     'use strict';
 
-    const t = html.tag,
-        a = t('a'),
-        div = t('div'),
-        p = t('p'),
-        img = t('img'),
-        input = t('input'),
-        select = t('select'),
-        label = t('label'),
-        span = t('span'),
-        button = t('button'),
-        table = t('table'),
-        thead = t('thead'),
-        tr = t('tr'),
-        th = t('th'),
-        tbody = t('tbody'),
-        td= t('td');
-
     const states = {
         INPROGRESS: Symbol(),
         SUCCESS: Symbol(),
         ERROR: Symbol()
     };
-
 
     class ViewModel extends ViewModelBase {
         constructor(params, context) {
@@ -54,7 +36,7 @@ define([
             this.username = context['$root'].runtime.service('session').getUsername();
 
             // import from parent
-            console.log('params', params, UserPermission, params.narrative.permissions());
+            // console.log('params', params, UserPermission, params.narrative.permissions());
             this.narrative = params.narrative;
             this.shareNarrative = params.shareNarrative;
             this.unshareNarrative = params.unshareNarrative;
@@ -110,7 +92,7 @@ define([
                                     console.error('Error changing user share permissions', err);
                                 });
                         });
-                        console.log('PERM', permission);
+                        // console.log('PERM', permission);
                         return {
                             user: {
                                 username: permission.profile.username,
@@ -126,7 +108,7 @@ define([
             });
 
             this.omitUsers = ko.pureComputed(() => {
-                let omit = this.usersSharedWith().reduce((userMap, sharedUser) => {
+                const omit = this.usersSharedWith().reduce((userMap, sharedUser) => {
                     userMap[sharedUser.user.username] = true;
                     return userMap;
                 }, {});
@@ -171,12 +153,12 @@ define([
         }
 
         doShare() {
-            let selectedUser = this.selectedUser();
+            const selectedUser = this.selectedUser();
             if (!selectedUser) {
                 console.warn('attempt to share, but no selected user');
                 return;
             }
-            let permission = this.selectedPermission();
+            const permission = this.selectedPermission();
             if (!permission) {
                 console.warn('attempt to share without a permission');
                 return;
@@ -210,6 +192,25 @@ define([
         //         });
         // }
     }
+
+    // VIEW
+
+    const t = html.tag,
+        a = t('a'),
+        div = t('div'),
+        p = t('p'),
+        img = t('img'),
+        input = t('input'),
+        select = t('select'),
+        label = t('label'),
+        span = t('span'),
+        button = t('button'),
+        table = t('table'),
+        thead = t('thead'),
+        tr = t('tr'),
+        th = t('th'),
+        tbody = t('tbody'),
+        td= t('td');
 
     function buildGravatar() {
         return gen.if('user.avatarUrl',
@@ -436,7 +437,7 @@ define([
                         class: 'alert alert-info'
                     }, [
                         p([
-                            html.loading('Sharing')
+                            builders.loading('Sharing')
                         ])
                     ])
                 ],

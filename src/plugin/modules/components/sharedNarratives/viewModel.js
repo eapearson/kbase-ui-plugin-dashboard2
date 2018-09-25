@@ -1,8 +1,6 @@
 define([
-    'knockout',
     '../narrativeViewModelBase'
 ], function (
-    ko,
     NarrativeViewModelBase
 ) {
     'use strict';

@@ -1,26 +1,21 @@
 define([
-    'bluebird',
     'knockout',
     'kb_knockout/registry',
     'kb_knockout/lib/viewModelBase',
     'kb_knockout/lib/generators',
-    'kb_common/html',
+    'kb_lib/html',
+    'kb_lib/htmlBuilders',
     '../lib/data'
-], function(
-    Promise,
+], function (
     ko,
     reg,
     ViewModelBase,
     gen,
     html,
+    builders,
     Data
 ) {
     'use strict';
-
-    let t = html.tag,
-        div = t('div'),
-        h3 = t('h3'),
-        span = t('span');
 
     class ViewModel extends ViewModelBase {
         constructor(params, context) {
@@ -41,21 +36,21 @@ define([
                 });
             });
 
-            let narrativeData = ko.observable();
-            let sharedNarrativeData = ko.observable();
+            const narrativeData = ko.observable();
+            const sharedNarrativeData = ko.observable();
 
-            let totalUserNarratives = ko.pureComputed(() => {
+            const totalUserNarratives = ko.pureComputed(() => {
                 return this.ownNarratives().length;
             });
 
-            let totalSharedNarratives = ko.pureComputed(() => {
+            const totalSharedNarratives = ko.pureComputed(() => {
                 return this.ownNarratives().filter((narrative) => {
                     return (narrative.permissions().length > 0);
                 }).length;
             });
 
             this.narrativesHistogram = ko.pureComputed(() => {
-                let data = narrativeData();
+                const data = narrativeData();
                 if (!data) {
                     return;
                 }
@@ -63,7 +58,7 @@ define([
             });
 
             this.sharedNarrativesHistogram = ko.pureComputed(() => {
-                let data = sharedNarrativeData();
+                const data = sharedNarrativeData();
                 if (!data) {
                     return;
                 }
@@ -85,6 +80,11 @@ define([
             });
         }
     }
+
+    const t = html.tag,
+        div = t('div'),
+        h3 = t('h3'),
+        span = t('span');
 
     function buildButtonBar() {
         return [
@@ -347,10 +347,10 @@ define([
                 }),
                 div([
                     h3('Total Narratives'),
-                    gen.if('loading', html.loading(),
+                    gen.if('loading', builders.loading(),
                         buildNarrativesHistogram()),
                     h3('Shared Narratives'),
-                    gen.if('loading',html.loading(),
+                    gen.if('loading',builders.loading(),
                         buildSharedNarrativesHistogram())
                 ])
             ])
