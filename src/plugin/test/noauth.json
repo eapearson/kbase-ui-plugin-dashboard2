@@ -1,6 +1,9 @@
 [
     {
         "description": "Unauthenticated",
+        "disable": {
+            "envs": ["next", "appdev", "prod"]
+        },
         "specs": [
             {
                 "description": "should get the signin page",

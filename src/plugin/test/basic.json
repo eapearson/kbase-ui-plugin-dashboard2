@@ -1,6 +1,9 @@
 [
     {
         "description": "Ensure main view appears",
+        "disable": {
+            "envs": ["next", "appdev", "prod"]
+        },
         "specs": [
             {
                 "description": "should have main panel framing appear when hit the path",
